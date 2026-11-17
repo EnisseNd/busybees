@@ -1,48 +1,85 @@
 @import "tailwindcss";
+@import "./styles/collage.css";
+@import "./styles/deck.css";
+@import "./styles/calendar.css";
 
+/*
+  Palette comes from the reference collages: pink lockers, cut-paper labels,
+  sage and leaf green lettering, a steel lunch tray.
+*/
 :root {
-  --paper: #f3ecdf;
-  --paper-deep: #e7dcc8;
-  --card: #fffaf3;
-  --ink: #1d1a16;
-  --muted: #5e564c;
-  --line: #e0d3c0;
-  --yale: #0f4c81;
-  --yale-deep: #0b3358;
-  --gold: #a6742c;
-  --moss: #2c6b4a;
-  --clay: #9c4330;
+  --locker: #f7cdd6;
+  --locker-deep: #eeb1bf;
+  --paper-white: #fffaf6;
+  --scrap: #f4f2d6;
+  --ink: #3b1826;
+  --muted: #7a5562;
+  --hairline: #f0a9c6;
+  --leaf: #4f7a3f;
+  --leaf-deep: #3c6030;
+  --sage: #8fae6b;
+  --rose: #d9507f;
+  --bubblegum: #f59ac0;
+  --berry: #8a2846;
+  --alert: #b3243f;
 }
 
 @theme inline {
-  --color-paper: var(--paper);
-  --color-paper-deep: var(--paper-deep);
-  --color-card: var(--card);
+  --color-locker: var(--locker);
+  --color-locker-deep: var(--locker-deep);
+  --color-paper-white: var(--paper-white);
+  --color-scrap: var(--scrap);
   --color-ink: var(--ink);
   --color-muted: var(--muted);
-  --color-line: var(--line);
-  --color-yale: var(--yale);
-  --color-yale-deep: var(--yale-deep);
-  --color-gold: var(--gold);
-  --color-moss: var(--moss);
-  --color-clay: var(--clay);
-  --font-sans: var(--font-outfit), sans-serif;
-  --font-serif: var(--font-fraunces), serif;
+  --color-hairline: var(--hairline);
+  --color-leaf: var(--leaf);
+  --color-leaf-deep: var(--leaf-deep);
+  --color-sage: var(--sage);
+  --color-rose: var(--rose);
+  --color-bubblegum: var(--bubblegum);
+  --color-berry: var(--berry);
+  --color-alert: var(--alert);
+
+  /* Older names, still used in a few places. They point at the new palette. */
+  --color-paper: var(--locker);
+  --color-paper-deep: var(--locker-deep);
+  --color-card: var(--paper-white);
+  --color-line: var(--hairline);
+  --color-yale: var(--leaf);
+  --color-yale-deep: var(--leaf-deep);
+  --color-gold: var(--rose);
+  --color-moss: var(--leaf);
+  --color-clay: var(--alert);
+
+  --font-sans: "Nunito Variable", "Nunito", ui-rounded, system-ui, sans-serif;
+  --font-serif: "Abril Fatface", Georgia, serif;
+  --font-script: "Yesteryear", "Snell Roundhand", cursive;
 }
 
 body {
-  background-color: var(--paper);
+  background-color: var(--locker);
+  /* Locker doors: a seam every 340px and a soft light from above. */
   background-image:
-    radial-gradient(circle at top left, rgba(15, 76, 129, 0.08), transparent 36%),
-    radial-gradient(circle at bottom right, rgba(166, 116, 44, 0.12), transparent 28%);
+    linear-gradient(180deg, rgba(255, 255, 255, 0.45), rgba(255, 255, 255, 0) 420px),
+    repeating-linear-gradient(
+      90deg,
+      rgba(255, 255, 255, 0) 0,
+      rgba(255, 255, 255, 0) 336px,
+      rgba(176, 82, 110, 0.28) 336px,
+      rgba(176, 82, 110, 0.28) 338px,
+      rgba(255, 255, 255, 0.5) 338px,
+      rgba(255, 255, 255, 0.5) 340px
+    );
+  background-attachment: fixed;
   color: var(--ink);
 }
 
 ::selection {
-  background: #d7e4f2;
+  background: var(--bubblegum);
+  color: var(--ink);
 }
 
 :focus-visible {
-  outline: 2px solid var(--yale);
+  outline: 3px solid var(--leaf);
   outline-offset: 2px;
 }

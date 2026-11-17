@@ -1,19 +1,11 @@
 import type { Metadata } from "next";
-import { Fraunces, Outfit } from "next/font/google";
 import Link from "next/link";
 import { Suspense } from "react";
 import { HeaderNav } from "@/components/site-header";
+import "@fontsource-variable/nunito";
+import "@fontsource/abril-fatface";
+import "@fontsource/yesteryear";
 import "./globals.css";
-
-const outfit = Outfit({
-  subsets: ["latin"],
-  variable: "--font-outfit",
-});
-
-const fraunces = Fraunces({
-  subsets: ["latin"],
-  variable: "--font-fraunces",
-});
 
 export const metadata: Metadata = {
   title: {
@@ -26,7 +18,7 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html className={`${outfit.variable} ${fraunces.variable} h-full antialiased`} lang="en">
+    <html className="h-full antialiased" lang="en">
       <body className="flex min-h-full flex-col font-sans text-ink">
         <header className="sticky top-0 z-20 border-b border-line/80 bg-paper/90 backdrop-blur">
           <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-5 py-4">

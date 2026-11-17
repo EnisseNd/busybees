@@ -89,6 +89,33 @@ export type Profile = {
   needsProfile: boolean;
 };
 
+/** One of the five things on a lunch-tray profile. */
+export type TrayItem = {
+  label: string;
+  emoji: string;
+  /** Small data URL of an uploaded photo. Empty or missing means show the emoji. */
+  image?: string | null;
+};
+
+/** A busy block from an imported calendar. Times are minutes after midnight in New Haven. */
+export type CalendarEvent = {
+  date: string;
+  start: number;
+  end: number;
+  title: string;
+};
+
+/** The suggested meetup stored on a match. */
+export type MatchPlan = {
+  /** YYYY-MM-DD */
+  date: string;
+  /** Hour the meetup starts, 0-23, New Haven time. */
+  hour: number;
+  /** "Lunch", "Coffee", "Study session"... */
+  activity: string;
+  place: string;
+};
+
 export type MatchCardModel = {
   id: string;
   matchType: MatchType;
@@ -98,10 +125,13 @@ export type MatchCardModel = {
   status: MatchStatus;
   viewerResponse: MatchResponse;
   partnerResponse: MatchResponse;
+  plan: MatchPlan | null;
   partner: {
     id: string;
+    firstName: string;
     college: string;
     classYear: number;
+    tray: TrayItem[];
   };
 };
 
