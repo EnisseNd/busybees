@@ -91,6 +91,9 @@ supabase/migrations/
 ## grok screenshot
 ![alt text](<grok-screenshot.png>)
 
+## video
+<video controls src="DemoVideo 2.mov" title="Title"></video>
+
 ## Notes
 
 - Prompts are saved on the questionnaire and are not shown to a match. The card uses the generated “why you matched” line.
