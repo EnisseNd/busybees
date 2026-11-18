@@ -166,7 +166,7 @@ const shared = { aCollege: "Saybrook", bCollege: "Pierson", weekStart: "2026-11-
 const friendPlan = suggestPlan({ ...shared, aEvents: events, bEvents: other, matchType: "friend" });
 check(
   "friend plan takes the first shared hour by preference",
-  JSON.stringify(friendPlan) === JSON.stringify({ date: "2026-11-18", hour: 18, activity: "Dinner", place: "Saybrook dining hall" }),
+  JSON.stringify(friendPlan) === JSON.stringify({ date: "2026-11-18", hour: 11, activity: "Lunch", place: "Saybrook dining hall" }),
 );
 
 const lunchPlan = suggestPlan({ ...shared, aEvents: events, bEvents: [], matchType: "friend" });

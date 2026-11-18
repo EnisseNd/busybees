@@ -1,14 +1,14 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Scrap } from "@/components/scrap";
 import { Tray } from "@/components/tray";
 import { demoMatches } from "@/lib/demo-data";
 import { googleCalendarLink } from "@/lib/plan";
 import { fieldClass, primaryButtonClass } from "@/lib/styles";
 import { planLine, starterLine } from "@/lib/tray";
-import type { MatchCardModel } from "@/lib/types";
+import { useMounted } from "@/lib/use-mounted";
 
 type Note = { id: number; mine: boolean; text: string };
 
@@ -20,23 +20,30 @@ const REPLIES = [
 ];
 
 export function DemoChat({ matchId }: { matchId: string }) {
-  const [match, setMatch] = useState<MatchCardModel | null | undefined>(undefined);
-  const [notes, setNotes] = useState<Note[]>([]);
+  const mounted = useMounted();
+  const match = useMemo(
+    () => (mounted ? (demoMatches(new Date()).find((item) => item.id === matchId) ?? null) : undefined),
+    [mounted, matchId],
+  );
+  const [sent, setSent] = useState<Note[]>([]);
   const [text, setText] = useState("");
   const replies = useRef(0);
   const bottom = useRef<HTMLDivElement | null>(null);
 
-  useEffect(() => {
-    const found = demoMatches(new Date()).find((item) => item.id === matchId) ?? null;
-    setMatch(found);
-    if (found) {
-      setNotes([{ id: 1, mine: false, text: `hi! I'm ${found.partner.firstName}. are you still good for ${found.plan?.activity.toLowerCase() ?? "lunch"}?` }]);
-    }
-  }, [matchId]);
+  const notes: Note[] = match
+    ? [
+        {
+          id: 1,
+          mine: false,
+          text: `hi! I'm ${match.partner.firstName}. are you still good for ${match.plan?.activity.toLowerCase() ?? "lunch"}?`,
+        },
+        ...sent,
+      ]
+    : sent;
 
   useEffect(() => {
-    bottom.current?.scrollIntoView({ block: "end" });
-  }, [notes]);
+    if (sent.length > 0) bottom.current?.scrollIntoView({ block: "end" });
+  }, [sent]);
 
   if (match === undefined) return <p className="text-sm font-semibold text-muted">Opening chat…</p>;
   if (match === null) {
@@ -56,11 +63,11 @@ export function DemoChat({ matchId }: { matchId: string }) {
     const body = text.trim();
     if (!body) return;
     setText("");
-    setNotes((current) => [...current, { id: Date.now(), mine: true, text: body }]);
+    setSent((current) => [...current, { id: Date.now(), mine: true, text: body }]);
     const reply = REPLIES[replies.current % REPLIES.length];
     replies.current += 1;
     window.setTimeout(() => {
-      setNotes((current) => [...current, { id: Date.now() + 1, mine: false, text: reply }]);
+      setSent((current) => [...current, { id: Date.now() + 1, mine: false, text: reply }]);
     }, 1400);
   }
 

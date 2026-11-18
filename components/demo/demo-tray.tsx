@@ -1,18 +1,15 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useMemo } from "react";
 import { TrayEditor } from "@/components/tray-editor";
 import { readTray, writeTray } from "@/lib/demo-data";
-import type { TrayItem } from "@/lib/types";
+import { useMounted } from "@/lib/use-mounted";
 
 export function DemoTray() {
   const router = useRouter();
-  const [saved, setSaved] = useState<{ firstName: string; items: TrayItem[] } | null>(null);
-
-  useEffect(() => {
-    setSaved(readTray());
-  }, []);
+  const mounted = useMounted();
+  const saved = useMemo(() => (mounted ? readTray() : null), [mounted]);
 
   if (!saved) return <p className="text-sm font-semibold text-muted">Getting your tray…</p>;
 

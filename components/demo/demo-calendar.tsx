@@ -1,36 +1,32 @@
 "use client";
 
 import { useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useMemo, useState } from "react";
 import { MonthCalendar, type Meetup } from "@/components/month-calendar";
 import { demoBusy, demoMatches, isoDay, readAnswers, withAnswers } from "@/lib/demo-data";
 import { cardClass, fieldClass, labelClass, primaryButtonClass } from "@/lib/styles";
 import type { CalendarEvent } from "@/lib/types";
+import { useMounted } from "@/lib/use-mounted";
 
 const MONTHS = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
 
 export function DemoCalendar() {
   const wanted = useSearchParams().get("m");
-  const [today, setToday] = useState<Date | null>(null);
+  const mounted = useMounted();
+  const today = useMemo(() => (mounted ? new Date() : null), [mounted]);
   const [imported, setImported] = useState(false);
   const [events, setEvents] = useState<CalendarEvent[]>([]);
-  const [meetups, setMeetups] = useState<Meetup[]>([]);
-
-  useEffect(() => {
-    const now = new Date();
-    setToday(now);
-    // Lunches the visitor said yes to in the sample week show up on the calendar.
-    const kept = withAnswers(demoMatches(now), readAnswers()).filter(
-      (match) => match.plan && match.status === "mutual",
-    );
-    setMeetups(
-      kept.map((match) => ({
+  // Lunches the visitor said yes to in the sample week show up on the calendar.
+  const meetups = useMemo<Meetup[]>(() => {
+    if (!today) return [];
+    return withAnswers(demoMatches(today), readAnswers())
+      .filter((match) => match.plan && match.status === "mutual")
+      .map((match) => ({
         date: match.plan!.date,
         hour: match.plan!.hour,
         label: `${match.plan!.activity} with ${match.partner.firstName}`,
-      })),
-    );
-  }, []);
+      }));
+  }, [today]);
 
   if (!today) return <p className="mt-6 text-sm font-semibold text-muted">Opening the calendar…</p>;
 

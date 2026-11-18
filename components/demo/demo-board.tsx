@@ -1,23 +1,28 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useMemo, useState } from "react";
 import { MatchesBoard } from "@/components/matches-board";
 import { Scrap } from "@/components/scrap";
 import { demoMatches, readAnswers, withAnswers, writeAnswers, type DemoAnswers } from "@/lib/demo-data";
 import { primaryButtonClass, secondaryButtonClass } from "@/lib/styles";
-import type { MatchCardModel } from "@/lib/types";
+import { useMounted } from "@/lib/use-mounted";
 
 export function DemoBoard() {
-  const [matches, setMatches] = useState<MatchCardModel[] | null>(null);
-  const [answers, setAnswers] = useState<DemoAnswers>({});
+  const mounted = useMounted();
+  // Bumped when the visitor starts the week over, so saved answers are read again.
+  const [round, setRound] = useState(0);
+  const [local, setLocal] = useState<DemoAnswers>({});
   const [again, setAgain] = useState<"" | "yes" | "no">("");
 
-  // Dates depend on the visitor's clock, so the sample week is built after mount.
-  useEffect(() => {
-    setAnswers(readAnswers());
-    setMatches(demoMatches(new Date()));
-  }, []);
+  // Dates depend on the visitor's clock, so the sample week is built in the browser.
+  const matches = useMemo(() => (mounted ? demoMatches(new Date()) : null), [mounted]);
+  const answers = useMemo<DemoAnswers>(
+    () => ({ ...(mounted ? readAnswers() : {}), ...local }),
+    // `round` is listed so a reset re-reads storage.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [mounted, local, round],
+  );
 
   if (!matches) return <p className="text-sm font-semibold text-muted">Setting the table…</p>;
 
@@ -66,8 +71,8 @@ export function DemoBoard() {
           matches={shown}
           onRespond={async (matchId, response) => {
             const next = { ...answers, [matchId]: response };
-            setAnswers(next);
             writeAnswers(next);
+            setLocal((current) => ({ ...current, [matchId]: response }));
             return { ok: true };
           }}
         />
@@ -78,8 +83,9 @@ export function DemoBoard() {
         <button
           className="font-extrabold text-leaf underline"
           onClick={() => {
-            setAnswers({});
             writeAnswers({});
+            setLocal({});
+            setRound((current) => current + 1);
             setAgain("");
           }}
           type="button"

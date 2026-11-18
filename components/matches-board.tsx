@@ -295,7 +295,7 @@ function SwipeDeck({
         </button>
       </div>
       <p className="mx-auto mt-3 max-w-sm text-center text-sm text-muted">
-        Drag the card right if you&rsquo;re interested, left to pass. They only find out if you both
+        Drag the card right if you&rsquo;re in for lunch, left to pass. They only find out if you both
         say interested.
       </p>
     </section>

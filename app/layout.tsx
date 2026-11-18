@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { Suspense } from "react";
+import { Scrap } from "@/components/scrap";
 import { HeaderNav } from "@/components/site-header";
 import "@fontsource-variable/inter";
 import "@fontsource/abril-fatface";
@@ -24,8 +25,10 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         <header className="gingham sticky top-0 z-20 border-b-2 border-hairline">
           <div className="mx-auto flex max-w-6xl items-center justify-between gap-3 px-4 py-2">
             <Link aria-label="BusyBees home" className="shrink-0" href="/">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img alt="BusyBees" className="block h-9 w-auto sm:h-11" src="/collage/logo-busybees.webp" />
+              <Scrap tilt={-2} white>
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img alt="BusyBees" className="block h-8 w-auto sm:h-10" src="/collage/logo-busybees.webp" />
+              </Scrap>
             </Link>
             <Suspense fallback={null}>
               <HeaderNav />
