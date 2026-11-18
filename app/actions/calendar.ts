@@ -55,7 +55,8 @@ export async function importCalendar(source: CalendarSource): Promise<ImportResu
     };
   }
 
-  const events = parseIcs(text);
+  // Keep only when someone is busy. Event names are dropped here and never stored.
+  const events = parseIcs(text).map((event) => ({ ...event, title: "" }));
   const supabase = await createClient();
   const { error } = await supabase.from("calendars").upsert({
     user_id: profile.id,
@@ -89,7 +90,7 @@ export async function removeCalendar(): Promise<{ ok: boolean; message: string }
   }
 
   revalidatePath("/calendar");
-  return { ok: true, message: "Your calendar is gone from busybee." };
+  return { ok: true, message: "Your calendar is gone from BusyBees." };
 }
 
 function isMissingTable(error: { message: string; code?: string }): boolean {

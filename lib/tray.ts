@@ -216,7 +216,27 @@ export function planLine(plan: MatchPlan): string {
   const weekday = new Intl.DateTimeFormat("en-US", { weekday: "long", timeZone: "UTC" }).format(
     new Date(Date.UTC(year, month - 1, day)),
   );
-  return `${plan.activity} ${weekday} at ${hourPhrase(plan.hour)}, ${plan.place}`;
+  const meal = plan.activity === "Lunch" || plan.activity === "Dinner";
+  const what = meal ? `30-minute ${plan.activity.toLowerCase()}` : plan.activity;
+  return `${what} ${weekday} at ${hourPhrase(plan.hour)}, ${plan.place}`;
+}
+
+/**
+ * Something to open with, taken from the other person's tray. The pick is
+ * steady for a given match so both the card and the chat show the same line.
+ */
+export function starterLine(tray: TrayItem[], seed: string): string | null {
+  const labels = tray.map((item) => item.label.trim()).filter(Boolean);
+  if (labels.length === 0) return null;
+  let total = 0;
+  for (const char of seed) total += char.charCodeAt(0);
+  const label = labels[total % labels.length];
+  const openers = [
+    `Not sure how to start? Ask about “${label}”.`,
+    `Ask what the story is with “${label}”.`,
+    `Easy opener: “${label}” is on their tray.`,
+  ];
+  return openers[total % openers.length];
 }
 
 /** What to call a match on screen when they have not added a first name. */

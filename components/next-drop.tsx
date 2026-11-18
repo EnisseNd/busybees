@@ -9,7 +9,7 @@ export async function NextDrop({ prominent = false }: { prominent?: boolean }) {
     <p className={prominent ? "font-serif text-2xl text-leaf sm:text-3xl" : "text-base font-extrabold text-leaf"}>
       {phrase}
       <span className="mt-1 block font-sans text-sm font-semibold text-muted">
-        New trays land every Monday at 9am.
+        Every Sunday at 8pm, with a 30-minute lunch already picked.
       </span>
     </p>
   );

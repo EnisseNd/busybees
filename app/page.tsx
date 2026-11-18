@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { Suspense } from "react";
 import { redirect } from "next/navigation";
 import { AuthForm } from "@/components/auth-form";
@@ -5,7 +6,7 @@ import { NextDrop } from "@/components/next-drop";
 import { Scrap } from "@/components/scrap";
 import { Tray } from "@/components/tray";
 import { getOptionalUser } from "@/lib/auth";
-import { cardClass } from "@/lib/styles";
+import { cardClass, primaryButtonClass } from "@/lib/styles";
 import { isSupabaseConfigured } from "@/lib/supabase/env";
 import { createClient } from "@/lib/supabase/server";
 import type { AuthFormState } from "@/lib/types";
@@ -36,14 +37,19 @@ export default function HomePage(props: PageProps<"/">) {
           </Scrap>
         </h1>
         <p className="paper-note mt-7 max-w-md px-4 pb-2 pt-2 text-lg font-semibold text-ink">
-          Put five things on a lunch tray. Every Monday you get a few Yale students to swipe
-          through, with a time you&rsquo;re both free.
+          Put five things on a lunch tray. Every Sunday at 8pm you get a few Yale students to swipe
+          through, each with a 30-minute dining hall lunch at a time you&rsquo;re both free.
         </p>
         <div className="mt-8 max-w-md">
           <Tray items={SAMPLE_TRAY} />
         </div>
-        <div className="mt-10">
-          <Suspense fallback={<p className="text-base font-extrabold text-leaf">New trays land every Monday at 9am.</p>}>
+        <p className="mt-8">
+          <Link className={primaryButtonClass} href="/demo">
+            Look around with sample people
+          </Link>
+        </p>
+        <div className="mt-6">
+          <Suspense fallback={<p className="text-base font-extrabold text-leaf">New trays land every Sunday at 8pm.</p>}>
             <NextDrop />
           </Suspense>
         </div>

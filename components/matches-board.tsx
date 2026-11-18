@@ -8,7 +8,8 @@ import { Scrap } from "@/components/scrap";
 import { Tray } from "@/components/tray";
 import { formatWeek } from "@/lib/drop";
 import { primaryButtonClass, roseButtonClass, secondaryButtonClass } from "@/lib/styles";
-import { partnerName, planLine, possessive } from "@/lib/tray";
+import { googleCalendarLink } from "@/lib/plan";
+import { partnerName, planLine, possessive, starterLine } from "@/lib/tray";
 import type { MatchCardModel, MatchType } from "@/lib/types";
 
 type Answer = "interested" | "passed";
@@ -20,10 +21,21 @@ export function MatchesBoard({
   matches,
   hasQuestionnaire,
   needsTray = false,
+  onRespond,
+  chatBase = "/chat",
+  deadlineNote,
 }: {
   matches: MatchCardModel[];
   hasQuestionnaire: boolean;
   needsTray?: boolean;
+  /** Replaces the server action. The sample-data demo uses this. */
+  onRespond?: (
+    matchId: string,
+    response: "interested" | "passed",
+  ) => Promise<{ ok: true } | { ok: false; message: string }>;
+  chatBase?: string;
+  /** A line under the buttons, such as the confirm-by deadline. */
+  deadlineNote?: string;
 }) {
   const router = useRouter();
   const [tab, setTab] = useState<MatchType>("friend");
@@ -65,7 +77,7 @@ export function MatchesBoard({
     setError("");
     setSent((current) => ({ ...current, [matchId]: response }));
     startTransition(async () => {
-      const result = await respondToMatch(matchId, response);
+      const result = await (onRespond ?? respondToMatch)(matchId, response);
       if (!result.ok) {
         // Undo the optimistic answer so the card returns to the deck.
         setSent((current) => {
@@ -122,7 +134,12 @@ export function MatchesBoard({
               </Scrap>
             </p>
           )}
-          {answered.length > 0 ? <AnsweredList cards={answered} onAnswer={answer} /> : null}
+          {waiting.length > 0 && deadlineNote ? (
+            <p className="mt-3 text-center text-sm font-extrabold text-berry">{deadlineNote}</p>
+          ) : null}
+          {answered.length > 0 ? (
+            <AnsweredList cards={answered} chatBase={chatBase} onAnswer={answer} />
+          ) : null}
         </>
       )}
     </div>
@@ -183,7 +200,7 @@ function EmptyState({ tab, hasQuestionnaire }: { tab: MatchType; hasQuestionnair
       </p>
       <p className="mt-2 max-w-xl text-sm leading-6 text-muted">
         {tab === "friend"
-          ? "They come out Mondays at 9am. If you just finished the questionnaire, you're in the next round."
+          ? "They come out Sundays at 8pm. If you just finished the questionnaire, you're in the next round."
           : "This list is optional. Turn it on at the end of the questionnaire if you want a study buddy."}
       </p>
     </div>
@@ -397,6 +414,9 @@ function CardFace({ card }: { card: DeckCard }) {
           {card.whyMatched}
         </Scrap>
       </p>
+      {starterLine(card.partner.tray, card.id) ? (
+        <p className="deck-starter">{starterLine(card.partner.tray, card.id)}</p>
+      ) : null}
 
       {card.plan ? (
         <p className="deck-plan">
@@ -413,9 +433,11 @@ function CardFace({ card }: { card: DeckCard }) {
 
 function AnsweredList({
   cards,
+  chatBase,
   onAnswer,
 }: {
   cards: DeckCard[];
+  chatBase: string;
   onAnswer: (matchId: string, response: Answer) => void;
 }) {
   return (
@@ -438,8 +460,21 @@ function AnsweredList({
                 </p>
               </div>
               <div className="flex items-center gap-2">
+                {mutual && card.plan ? (
+                  <a
+                    className="text-sm font-extrabold text-leaf underline"
+                    href={googleCalendarLink(
+                      card.plan,
+                      `${card.plan.activity} with ${partnerName(card.partner.firstName, card.partner.college)}`,
+                    )}
+                    rel="noreferrer"
+                    target="_blank"
+                  >
+                    Add to Google Calendar
+                  </a>
+                ) : null}
                 {mutual ? (
-                  <Link className={`${primaryButtonClass} px-4 py-2`} href={`/chat/${card.id}`}>
+                  <Link className={`${primaryButtonClass} px-4 py-2`} href={`${chatBase}/${card.id}`}>
                     Open chat
                   </Link>
                 ) : null}

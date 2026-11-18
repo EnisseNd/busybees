@@ -12,12 +12,11 @@ const TIME_ZONE = "America/New_York";
 export const FIRST_HOUR = 9;
 export const LAST_HOUR = 21;
 
-const FRIEND_HOURS = [12, 13, 18, 17, 15, 16, 14, 11, 19, 10, 20];
+// Friend meetups are always a dining hall meal: lunch first, dinner if lunch never lines up.
+const FRIEND_HOURS = [12, 13, 11, 18, 17, 19];
 const STUDY_HOURS = [19, 20, 15, 16, 14, 10, 11, 13, 21];
 
 /** Yale Hospitality lists this cafe in the Schwarzman Center's lower level. */
-const COFFEE_PLACE = "The Elm at the Schwarzman Center";
-const WALK_PLACE = "Cross Campus";
 const STUDY_PLACE = "Bass Library";
 
 export type PlanInput = {
@@ -93,20 +92,11 @@ function whereToMeet(
 ): Pick<MatchPlan, "activity" | "place"> {
   if (matchType === "study") return { activity: "Study session", place: STUDY_PLACE };
 
-  const meal = hour >= 11 && hour <= 13 ? "Lunch" : hour >= 17 && hour <= 19 ? "Dinner" : "";
-  if (meal) {
-    // Take turns hosting: even dates in the first person's college, odd in the second's.
-    const evenDate = Number(date.slice(8)) % 2 === 0;
-    const college = (evenDate ? aCollege : bCollege) || aCollege || bCollege;
-    return { activity: meal, place: college ? `${college} dining hall` : "a dining hall" };
-  }
-
-  // The cafe keeps weekday daytime hours, so evenings and weekends get a walk.
-  const weekday = weekdayOf(date);
-  const cafeOpen = weekday >= 1 && weekday <= 5 && hour >= 9 && hour <= 16;
-  return cafeOpen
-    ? { activity: "Coffee", place: COFFEE_PLACE }
-    : { activity: "Walk", place: WALK_PLACE };
+  // Take turns hosting: even dates in the first person's college, odd in the second's.
+  const meal = hour < 15 ? "Lunch" : "Dinner";
+  const evenDate = Number(date.slice(8)) % 2 === 0;
+  const college = (evenDate ? aCollege : bCollege) || aCollege || bCollege;
+  return { activity: meal, place: college ? `${college} dining hall` : "a dining hall" };
 }
 
 /** Accepts whatever came back from the jsonb column and keeps only well-formed blocks. */
@@ -186,4 +176,27 @@ export function minuteLabel(minutes: number): string {
   const suffix = hour >= 12 ? "PM" : "AM";
   const shown = hour % 12 === 0 ? 12 : hour % 12;
   return minute === 0 ? `${shown} ${suffix}` : `${shown}:${String(minute).padStart(2, "0")} ${suffix}`;
+}
+
+/** How long a suggested meal runs. Short enough to fit between classes. */
+export const MEETUP_MINUTES = 30;
+
+/**
+ * A link that opens Google Calendar with the meetup already filled in, so
+ * adding it is one tap. Times are New Haven wall-clock times.
+ */
+export function googleCalendarLink(plan: MatchPlan, title: string): string {
+  const day = plan.date.replace(/-/g, "");
+  const pad = (value: number) => String(value).padStart(2, "0");
+  const start = `${day}T${pad(plan.hour)}0000`;
+  const end = `${day}T${pad(plan.hour)}${pad(MEETUP_MINUTES)}00`;
+  const params = new URLSearchParams({
+    action: "TEMPLATE",
+    text: title,
+    dates: `${start}/${end}`,
+    ctz: "America/New_York",
+    location: plan.place,
+    details: "Set up on BusyBees.",
+  });
+  return `https://calendar.google.com/calendar/render?${params.toString()}`;
 }

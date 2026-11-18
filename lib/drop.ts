@@ -1,5 +1,6 @@
 const WEEKDAYS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"] as const;
-const DROP_MINUTES = 9 * 60;
+const DROP_WEEKDAY = 0; // Sunday
+const DROP_MINUTES = 20 * 60;
 
 type NyParts = {
   weekday: string;
@@ -10,31 +11,35 @@ type NyParts = {
   minute: number;
 };
 
-/** Matches drop Monday at 9:00am America/New_York. */
+/** Matches drop Sunday at 8:00pm America/New_York. */
 export function nextDropInfo(now = new Date()): { days: number; phrase: string } {
   const parts = nyParts(now);
   const weekdayIndex = WEEKDAYS.indexOf(parts.weekday as (typeof WEEKDAYS)[number]);
   const safeIndex = weekdayIndex === -1 ? 0 : weekdayIndex;
-  let days = (1 - safeIndex + 7) % 7;
+  let days = (DROP_WEEKDAY - safeIndex + 7) % 7;
 
-  if (safeIndex === 1) {
+  if (safeIndex === DROP_WEEKDAY) {
     const minutes = parts.hour * 60 + parts.minute;
     days = minutes < DROP_MINUTES ? 0 : 7;
   }
 
   const phrase =
     days === 0
-      ? "Next matches drop today"
+      ? "New trays drop tonight at 8"
       : days === 1
-        ? "Next matches drop in 1 day"
-        : `Next matches drop in ${days} days`;
+        ? "New trays drop tomorrow at 8pm"
+        : `New trays drop in ${days} days`;
 
   return { days, phrase };
 }
 
-/** Monday of the current New York week, as YYYY-MM-DD. */
+/**
+ * Monday of the match week, as YYYY-MM-DD. A week belongs to the Sunday 8pm
+ * drop before it, so from Sunday 8pm onward this is the Monday that follows.
+ */
 export function weekStartISO(now = new Date()): string {
-  const parts = nyParts(now);
+  // Shifting four hours forward turns "Sunday 8pm or later" into Monday.
+  const parts = nyParts(new Date(now.getTime() + 4 * 60 * 60 * 1000));
   const weekdayIndex = WEEKDAYS.indexOf(parts.weekday as (typeof WEEKDAYS)[number]);
   const safeIndex = weekdayIndex === -1 ? 1 : weekdayIndex;
   const daysSinceMonday = safeIndex === 0 ? 6 : safeIndex - 1;

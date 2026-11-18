@@ -175,10 +175,10 @@ check("lunch wins when noon is open", lunchPlan?.hour === 12 && lunchPlan.activi
 const studyPlan = suggestPlan({ ...shared, aEvents: events, bEvents: other, matchType: "study" });
 check("study plan is an evening at Bass", studyPlan?.hour === 19 && studyPlan.activity === "Study session" && studyPlan.place === "Bass Library");
 
-// Wednesday fully booked for one person, Thursday open only at 3 PM for the other.
-const packed = [busy("2026-11-18", 9, 22), busy("2026-11-19", 9, 15), busy("2026-11-19", 16, 22)];
-const coffee = suggestPlan({ ...shared, aEvents: packed, bEvents: [], matchType: "friend" });
-check("falls through to the next day, and a mid-afternoon slot is coffee", coffee?.date === "2026-11-19" && coffee.hour === 15 && coffee.activity === "Coffee");
+// Wednesday fully booked for one person, Thursday open only at 3 PM and from 6 PM.
+const packed = [busy("2026-11-18", 9, 22), busy("2026-11-19", 9, 15), busy("2026-11-19", 16, 18)];
+const later = suggestPlan({ ...shared, aEvents: packed, bEvents: [], matchType: "friend" });
+check("a free mid-afternoon hour is skipped: friend plans are always a meal", later?.date === "2026-11-19" && later.hour === 18 && later.activity === "Dinner");
 check("odd dates use the second person's college for meals", suggestPlan({ ...shared, aEvents: [busy("2026-11-18", 9, 22)], bEvents: [], matchType: "friend" })?.place === "Pierson dining hall");
 
 check("no plan unless both people have a calendar", suggestPlan({ ...shared, aEvents: events, bEvents: null, matchType: "friend" }) === null);

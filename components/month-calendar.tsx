@@ -136,7 +136,8 @@ export function MonthCalendar({
                         <ul className="cal-events">
                           {shown.map((event, index) => (
                             <li key={index}>
-                              <span className="cal-time">{compactTime(event.start)}</span> {event.title}
+                              <span className="cal-time">{compactTime(event.start)}</span>{" "}
+                              {event.title || `to ${compactTime(event.end)}`}
                             </li>
                           ))}
                           {extra > 0 ? <li className="cal-more">+{extra} more</li> : null}

@@ -26,7 +26,7 @@ export default function QuestionnairePage() {
       </h1>
       <p className="mt-5 text-base font-semibold leading-7 text-ink">
         Five short steps about you, then one optional step if you want a study buddy too. You can
-        change your answers any time. Each Monday&rsquo;s matches use whatever is saved.
+        change your answers any time. Each Sunday&rsquo;s matches use whatever is saved.
       </p>
       <div className={`${cardClass} relative mt-8`}>
         <span aria-hidden="true" className="tape tape-green -top-3 left-1/2 -ml-11" />

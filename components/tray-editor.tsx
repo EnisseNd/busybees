@@ -64,10 +64,13 @@ export function TrayEditor({
   initialFirstName,
   initialItems,
   college,
+  onSave,
 }: {
   initialFirstName: string;
   initialItems: TrayItem[];
   college: string;
+  /** Replaces the server action. The sample-data demo uses this. */
+  onSave?: (draft: { firstName: string; items: TrayItem[] }) => void;
 }) {
   const [firstName, setFirstName] = useState(initialFirstName);
   const [items, setItems] = useState<TrayItem[]>(initialItems);
@@ -110,6 +113,10 @@ export function TrayEditor({
       return;
     }
     setError("");
+    if (onSave) {
+      onSave({ firstName: checked.firstName, items: checked.tray });
+      return;
+    }
     startTransition(async () => {
       const result = await saveTray(draft);
       if (result) setError(result.message);

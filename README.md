@@ -1,6 +1,6 @@
-# busybee
+# BusyBees
 
-Friend matching for Yale students, with an optional study-buddy list. Everyone fills a lunch tray with five things. Each Monday you get a few trays to swipe through, and if you've both imported a calendar, a time and place you're both free. Chat opens only after both people tap Interested.
+Friend matching for Yale students, with an optional study-buddy list. Everyone fills a lunch tray with five things. Every Sunday at 8pm you get a few trays to swipe through, each with a 30-minute dining hall lunch at a time you're both free (if you've both imported a calendar). Chat opens only after both people tap Interested.
 
 ## Stack
 
@@ -35,7 +35,7 @@ curl -X POST http://localhost:3000/api/cron/matches \
   -H "Authorization: Bearer $CRON_SECRET"
 ```
 
-Point a scheduler at that URL for Mondays at 9:00am America/New_York. `GET` works too, for schedulers that cannot POST. The secret stays in the header.
+Point a scheduler at that URL for Sundays at 8:00pm America/New_York. The matches it writes are for the week that starts the next morning. `GET` works too, for schedulers that cannot POST. The secret stays in the header.
 
 Each person can receive up to three friend matches. Study matches are a separate list and only include students who opted in.
 
@@ -45,7 +45,11 @@ A tray is a first name plus five things: a label with an emoji, a photo you uplo
 
 ## Calendar
 
-On the Calendar page you paste your Google Calendar's secret iCal address, or upload an `.ics` file. It's a one-time copy: import again to refresh it. Event names are stored in `calendars`, which only the owner can read. The weekly match job reads both calendars with the service role, finds the first hour you're both free that week, and writes only that time and a place onto the match.
+On the Calendar page you paste your Google Calendar's secret iCal address, or upload an `.ics` file. It's a one-time copy: import again to refresh it. Only the busy times are stored (event names are dropped on import), in `calendars`, which only the owner can read. The weekly match job reads both calendars with the service role, finds the first hour you're both free that week, and writes only that time and a place onto the match.
+
+## Demo
+
+`/demo` walks through the whole thing with sample people and a sample class schedule: swipe trays, say you're in, chat, edit a tray, import a calendar. It needs no accounts and never touches the database, so it works on any deployment. The confirm-by deadline and the "would you get a meal with them again?" question exist only there for now.
 
 ## Chat
 

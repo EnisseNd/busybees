@@ -1,4 +1,4 @@
--- busybee schema
+-- BusyBees schema
 -- Run once in the Supabase SQL editor (it runs as a privileged role), then run
 -- supabase/migrations/001_trays_and_calendar.sql for trays, calendars and plans.
 --
@@ -96,7 +96,7 @@ declare
   year_value integer;
 begin
   if new.email is null or new.email !~* '^[^@[:space:]]+@yale\.edu$' then
-    raise exception 'busybee is limited to @yale.edu addresses';
+    raise exception 'BusyBees is limited to @yale.edu addresses';
   end if;
 
   college_value := nullif(trim(new.raw_user_meta_data ->> 'college'), '');
