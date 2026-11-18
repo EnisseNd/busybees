@@ -89,7 +89,7 @@ supabase/migrations/
 ```
 
 ## grok screenshot
-![alt text](<Screenshot 2026-11-17 at 6.02.11 PM.png>)
+![alt text](<grok-screenshot.png>)
 
 ## Notes
 
