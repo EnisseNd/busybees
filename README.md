@@ -1,6 +1,11 @@
-# BusyBees
+# Busy Bees
 
 Friend matching for Yale students, with an optional study-buddy list. Everyone fills a lunch tray with five things. Every Sunday at 8pm you get a few trays to swipe through, each with a 30-minute dining hall lunch at a time you're both free (if you've both imported a calendar). Chat opens only after both people tap Interested.
+
+<img src="docs/banner/stagehand.svg" width="100%" alt="Stagehand: hear and see a room before you book it">
+
+# Busy Bees
+
 
 ## Stack
 
