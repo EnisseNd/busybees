@@ -1,3 +1,5 @@
+<img src="docs/banner/busybees.svg" width="100%" alt="BusyBees: one meal a week with someone new">
+
 # Busy Bees
 
 Friend matching for Yale students, with an optional study-buddy list. Everyone fills a lunch tray with five things. Every Sunday at 8pm you get a few trays to swipe through, each with a 30-minute dining hall lunch at a time you're both free (if you've both imported a calendar). Chat opens only after both people tap Interested.
