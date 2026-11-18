@@ -18,7 +18,7 @@ Friend matching for Yale students, with an optional study-buddy list. Everyone f
 ## Setup
 
 1. Create a Supabase project.
-2. In the SQL editor, run [`supabase/schema.sql`](supabase/schema.sql) once, then [`supabase/migrations/001_trays_and_calendar.sql`](supabase/migrations/001_trays_and_calendar.sql). The second file adds trays, imported calendars and the suggested plan on a match. It's safe to run again. Until it has been run the app still works, but trays show up empty and no plans are suggested.
+2. In the SQL editor, run [`supabase/schema.sql`](supabase/schema.sql) once, then [`supabase/migrations/001_trays_and_calendar.sql`](supabase/migrations/001_trays_and_calendar.sql) and [`supabase/migrations/002_match_availability.sql`](supabase/migrations/002_match_availability.sql). The second file adds trays, imported calendars and the suggested plan on a match. The third lets a match see the hours you're both free. Both are safe to run again. Until the second has been run the app still works, but trays show up empty and no plans are suggested.
 3. In Authentication → Providers, enable Email. For local testing you can turn off “Confirm email”.
 4. In Authentication → URL configuration, set the site URL to `http://localhost:3000` and add `http://localhost:3000/auth/callback` to the redirect allow list.
 5. Copy `.env.example` to `.env.local` and fill in the project URL, publishable key, secret key, and `CRON_SECRET`.
@@ -52,7 +52,7 @@ A tray is a first name plus five things: a label with an emoji, a photo you uplo
 
 ## Calendar
 
-On the Calendar page you paste your Google Calendar's secret iCal address, or upload an `.ics` file. It's a one-time copy: import again to refresh it. Only the busy times are stored (event names are dropped on import), in `calendars`, which only the owner can read. The weekly match job reads both calendars with the service role, finds the first hour you're both free that week, and writes only that time and a place onto the match.
+On the Calendar page you paste your Google Calendar's secret iCal address, or upload an `.ics` file. It's a one-time copy: import again to refresh it. Only the busy times are stored (event names are dropped on import), in `calendars`, which only the owner can read directly. The weekly match job reads both calendars with the service role, finds the first hour you're both free that week, and writes only that time and a place onto the match. On an open match, `match_availability` also shows the next seven days of free hours to the two of you: the overlap, your hours, and theirs. A closed match sees none of it.
 
 ## Demo
 
@@ -87,6 +87,9 @@ public/collage/            Tray, drinks, backgrounds and paper pieces
 supabase/schema.sql
 supabase/migrations/
 ```
+
+## grok screenshot
+![alt text](<Screenshot 2026-11-17 at 6.02.11 PM.png>)
 
 ## Notes
 
