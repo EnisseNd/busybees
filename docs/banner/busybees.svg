@@ -1,0 +1,47 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1098" height="444" viewBox="0 0 1098 444" font-family="ui-monospace,SFMono-Regular,Consolas,Menlo,monospace" font-size="14.5">
+<style>.bee{animation:hover 3.2s ease-in-out infinite}@keyframes hover{0%,100%{transform:translate(0,0)}25%{transform:translate(2px,-4px)}50%{transform:translate(0,-6px)}75%{transform:translate(-2px,-3px)}}.cursor{animation:blink 1.1s steps(1) infinite}@keyframes blink{50%{opacity:0}}@media (prefers-reduced-motion:reduce){.bee,.cursor{animation:none}}</style>
+<rect width="100%" height="100%" rx="10" fill="#19140c"/>
+<g class="bee">
+<text x="26" y="52.0" xml:space="preserve" fill="#f2c14e">               ,+,                  ,==~</text>
+<text x="26" y="69.0" xml:space="preserve" fill="#f2c14e">           '   ~;cvc~            'lvc==vx'</text>
+<text x="26" y="86.0" xml:space="preserve" fill="#f2c14e">          o;       =Cv          =o=     +e</text>
+<text x="26" y="103.0" xml:space="preserve" fill="#f2c14e">         'a          co;       ce'       o+</text>
+<text x="26" y="120.0" xml:space="preserve" fill="#f2c14e">          a,          ~e+     ;a         vv</text>
+<text x="26" y="137.0" xml:space="preserve" fill="#f2c14e">          lC           'a=    a;         Cc</text>
+<text x="26" y="154.0" xml:space="preserve" fill="#f2c14e">           e+           ~q'  =e          q~</text>
+<text x="26" y="171.0" xml:space="preserve" fill="#f2c14e"> ;,        'a=           vv  vx         vC         ea</text>
+<text x="26" y="188.0" xml:space="preserve" fill="#f2c14e"> ~~         'ol          ;e  vx        =a'         q= +qx</text>
+<text x="26" y="205.0" xml:space="preserve" fill="#f2c14e">  l~          vC;        ,o  ~e       +e~         ;x C+=,</text>
+<text x="26" y="222.0" xml:space="preserve" fill="#f2c14e">  ~     '      ,vx=   ',;eC==,oo~   ;xx           +oC;</text>
+<text x="26" y="239.0" xml:space="preserve" fill="#f2c14e">   +    c~       '+eCllcv@@@@q=xxvoC+~  ~;=;~     vq</text>
+<text x="26" y="256.0" xml:space="preserve" fill="#f2c14e">  'l  ~;;        cq0c'~ ,0@00o ''~U0o,+q0@@@0qc+oaOQv'</text>
+<text x="26" y="273.0" xml:space="preserve" fill="#f2c14e">  'lx',         a@@@='~';0@0@e'~~'a@@@@@@000@@@@@@OlxQ;</text>
+<text x="26" y="290.0" xml:space="preserve" fill="#f2c14e">   '+v,  ' ';lCU@00@+'~';0@0@o'~~'a000000@@@000000U~~0q</text>
+<text x="26" y="307.0" xml:space="preserve" fill="#f2c14e">     'll=, '+xaQ@@00+'~';0@0@o'~~'a00@@0000000@@@@@@@@v</text>
+<text x="26" y="324.0" xml:space="preserve" fill="#f2c14e">       ~'       x@@@='~';0000o'~~ a@@UU@@@@@@@QaO00Oqc</text>
+<text x="26" y="341.0" xml:space="preserve" fill="#f2c14e">                 ;oOv,,',@@0@o ',;qUl  coqqqoc' ',,'</text>
+<text x="26" y="358.0" xml:space="preserve" fill="#f2c14e">                   '=clvCQOOOacolc,      '+</text>
+<text x="26" y="375.0" xml:space="preserve" fill="#f2c14e">                       ~o,'''''ll         C=</text>
+<text x="26" y="392.0" xml:space="preserve" fill="#f2c14e">                        vl     'e'        =C</text>
+<text x="26" y="409.0" xml:space="preserve" fill="#f2c14e">                       +c     'v,        ,v'</text>
+</g>
+<text x="580" y="111.5"><tspan fill="#ffd65a" xml:space="preserve">busybees</tspan><tspan fill="#8b7a55" xml:space="preserve">@</tspan><tspan fill="#6aa3e8" xml:space="preserve">yale</tspan></text>
+<text x="580" y="128.5"><tspan fill="#8b7a55" xml:space="preserve">----------------------------------</tspan></text>
+<text x="580" y="145.5"><tspan fill="#d99a2b" xml:space="preserve">Tagline       </tspan><tspan fill="#f6ecd2" xml:space="preserve">one meal a week with someone new</tspan></text>
+<text x="580" y="162.5"><tspan fill="#d99a2b" xml:space="preserve">For           </tspan><tspan fill="#f6ecd2" xml:space="preserve">Yalies with no room in their calendar</tspan></text>
+<text x="580" y="196.5"><tspan fill="#d99a2b" xml:space="preserve">Match.By      </tspan><tspan fill="#f6ecd2" xml:space="preserve">what's on your lunch tray</tspan></text>
+<text x="580" y="213.5"><tspan fill="#d99a2b" xml:space="preserve">Match.When    </tspan><tspan fill="#f6ecd2" xml:space="preserve">a gap you both have, from Google Calendar</tspan></text>
+<text x="580" y="230.5"><tspan fill="#d99a2b" xml:space="preserve">Match.Size    </tspan><tspan fill="#f6ecd2" xml:space="preserve">two people, 1 hour or less</tspan></text>
+<text x="580" y="247.5"><tspan fill="#d99a2b" xml:space="preserve">Match.Every   </tspan><tspan fill="#f6ecd2" xml:space="preserve">week</tspan></text>
+<text x="580" y="281.5"><tspan fill="#ffd65a" xml:space="preserve">What lands in your inbox</tspan></text>
+<text x="580" y="298.5"><tspan fill="#f6ecd2" xml:space="preserve">"You've been matched with </tspan><tspan fill="#6aa3e8" xml:space="preserve">X</tspan><tspan fill="#f6ecd2" xml:space="preserve"> for</tspan></text>
+<text x="580" y="315.5"><tspan fill="#f6ecd2" xml:space="preserve"> a meal at </tspan><tspan fill="#6aa3e8" xml:space="preserve">this time</tspan><tspan fill="#f6ecd2" xml:space="preserve">."</tspan></text>
+<rect x="580" y="337.5" width="22" height="14" fill="#2b2112"/>
+<rect x="606" y="337.5" width="22" height="14" fill="#8a5a12"/>
+<rect x="632" y="337.5" width="22" height="14" fill="#d99a2b"/>
+<rect x="658" y="337.5" width="22" height="14" fill="#f2c14e"/>
+<rect x="684" y="337.5" width="22" height="14" fill="#ffd65a"/>
+<rect x="710" y="337.5" width="22" height="14" fill="#f6ecd2"/>
+<rect x="736" y="337.5" width="22" height="14" fill="#286dc0"/>
+<rect class="cursor" x="770" y="337.5" width="9" height="14" fill="#f6ecd2"/>
+</svg>
