@@ -1,6 +1,11 @@
-# SocialSync
+# Busy Bees
 
 Platonic friend matching for Yale, with an optional study-buddy path. Matches drop once a week. Chat stays on the site and opens only after both people tap Interested.
+
+<img src="docs/banner/stagehand.svg" width="100%" alt="Stagehand: hear and see a room before you book it">
+
+# Busy Bees
+
 
 ## Stack
 
