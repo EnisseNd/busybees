@@ -25,17 +25,17 @@ export const SOCIAL_ENERGY = [
   {
     value: "low",
     label: "Low-key",
-    hint: "One good conversation beats a crowded room.",
+    hint: "I'd rather talk to one person than work a room.",
   },
   {
     value: "medium",
     label: "In the middle",
-    hint: "Happy in a small group, and fine leaving early.",
+    hint: "A few people is my sweet spot. I might leave early.",
   },
   {
     value: "high",
     label: "High energy",
-    hint: "I come alive when the room is full.",
+    hint: "The more people the better.",
   },
 ] as const;
 
@@ -91,8 +91,8 @@ export const LOOKING_FOR = [
   "low-key hangs",
   "a go-out friend",
   "a creative collaborator",
-  "coffee and a real conversation",
-  "weekend plans that actually happen",
+  "coffee and a long talk",
+  "weekend plans",
   "getting off campus",
 ] as const;
 

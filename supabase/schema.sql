@@ -1,5 +1,6 @@
--- SocialSync schema
--- Run once in the Supabase SQL editor (it runs as a privileged role).
+-- busybee schema
+-- Run once in the Supabase SQL editor (it runs as a privileged role), then run
+-- supabase/migrations/001_trays_and_calendar.sql for trays, calendars and plans.
 --
 -- Chat is one row per unordered pair. user_id is the lower uuid and
 -- matched_user_id is the higher one, so the same two people are not stored
@@ -95,7 +96,7 @@ declare
   year_value integer;
 begin
   if new.email is null or new.email !~* '^[^@[:space:]]+@yale\.edu$' then
-    raise exception 'SocialSync is limited to @yale.edu addresses';
+    raise exception 'busybee is limited to @yale.edu addresses';
   end if;
 
   college_value := nullif(trim(new.raw_user_meta_data ->> 'college'), '');

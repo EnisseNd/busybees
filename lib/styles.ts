@@ -1,13 +1,19 @@
 export const fieldClass =
-  "w-full rounded-xl border border-line bg-white px-3 py-2.5 text-sm text-ink outline-none transition focus:border-yale";
+  "w-full rounded-[2px] border-2 border-hairline bg-white px-3 py-2.5 text-base text-ink placeholder:text-muted/70 focus:border-leaf";
 
-export const labelClass = "mb-1.5 block text-sm font-medium text-ink";
+export const labelClass = "mb-1.5 block text-sm font-extrabold text-ink";
 
-export const primaryButtonClass =
-  "inline-flex items-center justify-center rounded-full bg-yale px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-yale-deep disabled:cursor-not-allowed disabled:opacity-60";
+const stickerBase =
+  "inline-flex items-center justify-center rounded-[2px] px-5 py-2.5 text-sm font-extrabold motion-safe:transition-transform active:translate-x-[3px] active:translate-y-[3px] active:shadow-none disabled:cursor-not-allowed disabled:opacity-60";
 
-export const secondaryButtonClass =
-  "inline-flex items-center justify-center rounded-full border border-line bg-white px-4 py-2.5 text-sm font-semibold text-ink transition hover:border-yale disabled:cursor-not-allowed disabled:opacity-60";
+/** Green sticker label. The hard offset shadow flattens when pressed. */
+export const primaryButtonClass = `${stickerBase} bg-leaf text-white shadow-[3px_3px_0_var(--leaf-deep)] hover:bg-leaf-deep`;
 
-export const cardClass =
-  "rounded-3xl border border-line bg-card p-6 shadow-[0_20px_50px_rgba(29,26,22,0.06)]";
+/** White paper label with a pink edge. */
+export const secondaryButtonClass = `${stickerBase} border-2 border-hairline bg-white text-ink shadow-[3px_3px_0_var(--hairline)] hover:border-rose`;
+
+/** Pink sticker label, for the second choice in a pair (Pass, Remove). */
+export const roseButtonClass = `${stickerBase} bg-[#c63a6c] text-white shadow-[3px_3px_0_var(--berry)] hover:bg-berry`;
+
+/** A sheet of straight-cut paper. */
+export const cardClass = "panel p-6";

@@ -1,7 +1,14 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { weekStartISO } from "@/lib/drop";
+import { normalizeEvents, suggestPlan } from "@/lib/plan";
 import { parseStoredAnswers } from "@/lib/questionnaire";
-import type { FriendAnswers, MatchType, StudyAnswers } from "@/lib/types";
+import type {
+  CalendarEvent,
+  FriendAnswers,
+  MatchPlan,
+  MatchType,
+  StudyAnswers,
+} from "@/lib/types";
 
 /**
  * Friend matching is the main score. Study matching runs only when both
@@ -88,6 +95,8 @@ type MatchInsert = {
   status: "pending";
   user_response: "pending";
   matched_response: "pending";
+  /** Suggested time and place, when both people imported a calendar. */
+  plan?: MatchPlan | null;
 };
 
 export function scoreFriendMatch(a: FriendAnswers, b: FriendAnswers): number {
@@ -261,10 +270,16 @@ export async function generateWeeklyMatches(
   }
 
   const planned = planWeeklyMatches(people, options);
-  const weekStart = weekStartISO(options.now ?? new Date());
+  const now = options.now ?? new Date();
+  const weekStart = weekStartISO(now);
   if (planned.length === 0) {
     return { weekStart, considered: people.length, planned: 0 };
   }
+
+  const pairedIds = Array.from(
+    new Set(planned.flatMap((match) => [match.userId, match.matchedUserId])),
+  );
+  const { calendars, colleges } = await loadPlanInputs(supabase, pairedIds);
 
   const rows: MatchInsert[] = planned.map((match) => ({
     user_id: match.userId,
@@ -276,19 +291,95 @@ export async function generateWeeklyMatches(
     status: "pending",
     user_response: "pending",
     matched_response: "pending",
+    plan: suggestPlan({
+      aEvents: calendars.get(match.userId),
+      bEvents: calendars.get(match.matchedUserId),
+      aCollege: colleges.get(match.userId),
+      bCollege: colleges.get(match.matchedUserId),
+      matchType: match.matchType,
+      weekStart,
+      now,
+    }),
   }));
 
   // Existing pairs stay put, including interest and chat status.
+  let includePlan = true;
   for (let index = 0; index < rows.length; index += 500) {
     const slice = rows.slice(index, index + 500);
-    const { error: insertError } = await supabase.from("matches").upsert(slice, {
-      onConflict: "user_id,matched_user_id,week_start,match_type",
-      ignoreDuplicates: true,
-    });
+    let { error: insertError } = await upsertMatches(supabase, slice, includePlan);
+
+    // The plan column arrives with a later migration. Until it has been run,
+    // save the matches without a plan instead of failing the whole drop.
+    if (insertError && includePlan && isMissingPlanColumn(insertError)) {
+      includePlan = false;
+      ({ error: insertError } = await upsertMatches(supabase, slice, false));
+    }
     if (insertError) throw new Error(insertError.message);
   }
 
   return { weekStart, considered: people.length, planned: planned.length };
+}
+
+type DatabaseError = { message: string; code?: string };
+
+function upsertMatches(supabase: SupabaseClient, rows: MatchInsert[], includePlan: boolean) {
+  const payload = includePlan
+    ? rows
+    : rows.map((row) => {
+        const copy = { ...row };
+        delete copy.plan;
+        return copy;
+      });
+  return supabase.from("matches").upsert(payload, {
+    onConflict: "user_id,matched_user_id,week_start,match_type",
+    ignoreDuplicates: true,
+  });
+}
+
+function isMissingPlanColumn(error: DatabaseError): boolean {
+  return (
+    error.code === "PGRST204" ||
+    error.code === "42703" ||
+    /\bplan\b/i.test(error.message)
+  );
+}
+
+/**
+ * Imported calendars and colleges for the people who were paired. Calendars
+ * are private, so this needs the service-role client. If either table cannot
+ * be read (the migration has not been run yet), matches go out without plans.
+ */
+async function loadPlanInputs(
+  supabase: SupabaseClient,
+  userIds: string[],
+): Promise<{ calendars: Map<string, CalendarEvent[]>; colleges: Map<string, string> }> {
+  const calendars = new Map<string, CalendarEvent[]>();
+  const colleges = new Map<string, string>();
+
+  for (let index = 0; index < userIds.length; index += 200) {
+    const ids = userIds.slice(index, index + 200);
+
+    const { data: calendarRows, error: calendarError } = await supabase
+      .from("calendars")
+      .select("user_id, events")
+      .in("user_id", ids);
+    if (calendarError) return { calendars: new Map(), colleges };
+    for (const row of (calendarRows ?? []) as { user_id: string; events: unknown }[]) {
+      calendars.set(row.user_id, normalizeEvents(row.events));
+    }
+
+    const { data: userRows, error: userError } = await supabase
+      .from("users")
+      .select("id, college")
+      .in("id", ids);
+    if (!userError) {
+      for (const row of (userRows ?? []) as { id: string; college: string }[]) {
+        colleges.set(row.id, row.college);
+      }
+    }
+  }
+
+  return { calendars, colleges };
 }
 
 type ScoredPair = PlannedMatch & { key: string };

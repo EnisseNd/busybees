@@ -3,6 +3,7 @@ import Link from "next/link";
 import { Suspense } from "react";
 import { signOut } from "@/app/actions/auth";
 import { QuestionnaireForm } from "@/components/questionnaire-form";
+import { Scrap } from "@/components/scrap";
 import { requireUser } from "@/lib/auth";
 import { draftFromStored, emptyDraft } from "@/lib/questionnaire";
 import { cardClass, secondaryButtonClass } from "@/lib/styles";
@@ -14,14 +15,21 @@ export const metadata: Metadata = {
 
 export default function QuestionnairePage() {
   return (
-    <main className="mx-auto w-full max-w-2xl flex-1 px-5 py-10">
-      <p className="text-sm font-semibold uppercase tracking-[0.16em] text-gold">Friend matching</p>
-      <h1 className="mt-2 font-serif text-4xl text-ink">Tell us who to look for</h1>
-      <p className="mt-3 text-sm leading-6 text-muted">
-        The first five steps are for friends. The last step is optional and only turns on study
-        buddies. You can edit this later. Matching reads the latest version each week.
+    <main className="mx-auto w-full max-w-2xl flex-1 px-5 py-8">
+      <h1>
+        <Scrap tilt={-3}>
+          <span className="font-script text-5xl leading-none ink-leaf">Who should</span>
+        </Scrap>{" "}
+        <Scrap shape={2} tilt={2}>
+          <span className="font-serif text-4xl leading-none ink-rose">we look for?</span>
+        </Scrap>
+      </h1>
+      <p className="mt-5 text-base font-semibold leading-7 text-ink">
+        Five short steps about you, then one optional step if you want a study buddy too. You can
+        change your answers any time. Each Monday&rsquo;s matches use whatever is saved.
       </p>
-      <div className={`${cardClass} mt-6`}>
+      <div className={`${cardClass} relative mt-8`}>
+        <span aria-hidden="true" className="tape tape-green -top-3 left-1/2 -ml-11" />
         <Suspense fallback={<p className="text-sm text-muted">Loading your answers…</p>}>
           <QuestionnaireLoader />
         </Suspense>
@@ -36,8 +44,8 @@ async function QuestionnaireLoader() {
     return (
       <div>
         <p className="text-sm leading-6 text-ink">
-          This account is signed in, but the profile row never landed. Sign out and create the
-          account again with your college and class year.
+          You&rsquo;re signed in, but your college and class year didn&rsquo;t save. Sign out and
+          create the account again.
         </p>
         <form action={signOut} className="mt-4">
           <button className={secondaryButtonClass} type="submit">
@@ -63,9 +71,9 @@ async function QuestionnaireLoader() {
   return (
     <>
       <p className="mb-5 text-sm text-muted">
-        {profile.college} · Class of {profile.classYear}.{" "}
-        <Link className="underline" href="/matches">
-          Skip to matches
+        {profile.college}, class of {profile.classYear}.{" "}
+        <Link className="font-extrabold text-leaf underline" href="/matches">
+          Skip to my matches
         </Link>
       </p>
       <QuestionnaireForm initialDraft={initialDraft} />

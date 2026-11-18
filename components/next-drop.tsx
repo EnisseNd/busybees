@@ -6,16 +6,10 @@ export async function NextDrop({ prominent = false }: { prominent?: boolean }) {
   const { phrase } = nextDropInfo(new Date());
 
   return (
-    <p
-      className={
-        prominent
-          ? "font-serif text-2xl text-ink sm:text-3xl"
-          : "text-sm font-medium text-yale"
-      }
-    >
+    <p className={prominent ? "font-serif text-2xl text-leaf sm:text-3xl" : "text-base font-extrabold text-leaf"}>
       {phrase}
-      <span className="mt-1 block text-sm font-sans font-normal text-muted">
-        Mondays at 9:00am ET. Friend matching comes first. Study buddies are a separate list.
+      <span className="mt-1 block font-sans text-sm font-semibold text-muted">
+        New trays land every Monday at 9am.
       </span>
     </p>
   );

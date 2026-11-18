@@ -23,17 +23,21 @@ export function AuthForm({
 
   return (
     <div>
-      <div className="mb-5 grid grid-cols-2 rounded-full bg-paper-deep p-1 text-sm font-semibold">
+      <div className="paper-tabs mb-5" role="tablist">
         <button
-          className={mode === "sign-in" ? "rounded-full bg-white text-ink shadow-sm" : "text-muted"}
+          aria-selected={mode === "sign-in"}
+          className="paper-tab"
           onClick={() => setMode("sign-in")}
+          role="tab"
           type="button"
         >
           Sign in
         </button>
         <button
-          className={mode === "sign-up" ? "rounded-full bg-white text-ink shadow-sm" : "text-muted"}
+          aria-selected={mode === "sign-up"}
+          className="paper-tab"
           onClick={() => setMode("sign-up")}
+          role="tab"
           type="button"
         >
           Create account
@@ -41,16 +45,16 @@ export function AuthForm({
       </div>
 
       {!configured ? (
-        <p className="mb-4 rounded-2xl bg-paper-deep px-3 py-2 text-sm text-ink" role="status">
-          Supabase is not connected yet. Copy <code>.env.example</code> to <code>.env.local</code> and
-          add your project URL and key.
+        <p className="mb-4 rounded-[2px] border-2 border-dashed border-hairline bg-scrap px-3 py-2 text-sm font-semibold text-ink" role="status">
+          Sign-in is off because the database isn&rsquo;t connected yet. Copy <code>.env.example</code> to{" "}
+          <code>.env.local</code> and add the Supabase project URL and key.
         </p>
       ) : null}
 
       {state.message ? (
         <p
-          className={`mb-4 rounded-2xl px-3 py-2 text-sm ${
-            state.tone === "error" ? "bg-red-50 text-clay" : "bg-emerald-50 text-moss"
+          className={`mb-4 rounded-[2px] border-2 px-3 py-2 text-sm font-bold ${
+            state.tone === "error" ? "border-alert bg-white text-alert" : "border-leaf bg-scrap text-leaf"
           }`}
           role={state.tone === "error" ? "alert" : "status"}
         >
@@ -121,7 +125,7 @@ export function AuthForm({
           </>
         ) : null}
 
-        <div className="mt-1 flex flex-col gap-2 sm:flex-row">
+        <div className="mt-1 flex flex-col gap-3 sm:flex-row">
           <button
             className={primaryButtonClass}
             disabled={!configured || pending}
@@ -129,7 +133,7 @@ export function AuthForm({
             type="submit"
             value={creating ? "sign-up-password" : "sign-in-password"}
           >
-            {pending ? "Working…" : creating ? "Create account" : "Sign in"}
+            {pending ? "One second…" : creating ? "Create account" : "Sign in"}
           </button>
           <button
             className={secondaryButtonClass}
@@ -144,8 +148,8 @@ export function AuthForm({
       </form>
       <p className="mt-4 text-sm leading-6 text-muted">
         {creating
-          ? "New accounts are limited to @yale.edu. Password and magic link both store your college and class year."
-          : "Magic link sign-in is for accounts that already exist. New students should create an account first."}
+          ? "You need an @yale.edu address. We keep your college and class year with the account."
+          : "The emailed link only works if you already have an account. New here? Create one first."}
       </p>
     </div>
   );

@@ -95,6 +95,8 @@ export type TrayItem = {
   emoji: string;
   /** Small data URL of an uploaded photo. Empty or missing means show the emoji. */
   image?: string | null;
+  /** Up to two more pictures piled into the same well, like the layered collages. */
+  extras?: string[];
 };
 
 /** A busy block from an imported calendar. Times are minutes after midnight in New Haven. */

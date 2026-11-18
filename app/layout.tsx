@@ -1,35 +1,40 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { Suspense } from "react";
+import { Scrap } from "@/components/scrap";
 import { HeaderNav } from "@/components/site-header";
-import "@fontsource-variable/nunito";
+import "@fontsource-variable/inter";
 import "@fontsource/abril-fatface";
-import "@fontsource/yesteryear";
+import "@fontsource/pinyon-script";
+import "@fontsource/sacramento";
 import "./globals.css";
 
 export const metadata: Metadata = {
   title: {
-    default: "SocialSync",
-    template: "%s · SocialSync",
+    default: "Busybee",
+    template: "%s | Busybee",
   },
   description:
-    "Platonic friend matching for Yale. New matches once a week, with an optional study-buddy path. Chat stays on the site.",
+    "Friend matching for Yale students. Fill a lunch tray with five things, get new people every week, and meet up when you're both free.",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html className="h-full antialiased" lang="en">
       <body className="flex min-h-full flex-col font-sans text-ink">
-        <header className="sticky top-0 z-20 border-b border-line/80 bg-paper/90 backdrop-blur">
-          <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-5 py-4">
-            <div className="flex items-center gap-3">
-              <Link className="font-serif text-2xl tracking-tight text-ink" href="/">
-                SocialSync
-              </Link>
-              <span className="rounded-full border border-line px-2 py-0.5 text-[11px] font-semibold uppercase tracking-wider text-muted">
-                Yale
-              </span>
-            </div>
+        <header className="gingham sticky top-0 z-20 border-b-2 border-hairline">
+          <div className="mx-auto flex max-w-6xl items-center justify-between gap-3 px-4 py-2">
+            <Link aria-label="Busybee home" className="shrink-0" href="/">
+              <Scrap tilt={-3}>
+                <span className="font-serif text-3xl leading-none">
+                  {"busybee".split("").map((letter, index) => (
+                    <span className={index % 2 === 0 ? "ink-rose" : "ink-leaf"} key={index}>
+                      {letter}
+                    </span>
+                  ))}
+                </span>
+              </Scrap>
+            </Link>
             <Suspense fallback={null}>
               <HeaderNav />
             </Suspense>

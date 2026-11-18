@@ -3,10 +3,13 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
 import { ChatPanel } from "@/components/chat-panel";
+import { Scrap } from "@/components/scrap";
+import { Tray } from "@/components/tray";
 import { requireUser } from "@/lib/auth";
 import { isUuid } from "@/lib/constants";
 import { partnerId } from "@/lib/match-view";
 import { cardClass } from "@/lib/styles";
+import { parsePlan, parseTray, partnerName, planLine, trayIsEmpty } from "@/lib/tray";
 import type { ChatMessage, MatchStatus } from "@/lib/types";
 import { createClient } from "@/lib/supabase/server";
 
@@ -17,7 +20,7 @@ export const metadata: Metadata = {
 export default function ChatPage({ params }: { params: Promise<{ matchId: string }> }) {
   return (
     <main className="mx-auto flex w-full max-w-3xl flex-1 flex-col px-5 py-8">
-      <Suspense fallback={<p className="text-sm text-muted">Opening chat…</p>}>
+      <Suspense fallback={<p className="text-sm text-muted">Opening the chat…</p>}>
         <ChatLoader params={params} />
       </Suspense>
     </main>
@@ -30,19 +33,31 @@ async function ChatLoader({ params }: { params: Promise<{ matchId: string }> }) 
 
   const profile = await requireUser();
   const supabase = await createClient();
-  const { data: match } = await supabase
+
+  // `plan`, `first_name` and `tray` come with the trays-and-calendar
+  // migration. If a column is missing, ask again for the original ones.
+  const baseMatchColumns = "id, user_id, matched_user_id, status, why_matched, match_type";
+  let matchResult = await supabase
     .from("matches")
-    .select("id, user_id, matched_user_id, status, why_matched, match_type")
+    .select(`${baseMatchColumns}, plan`)
     .eq("id", matchId)
     .maybeSingle();
+  if (matchResult.error) {
+    matchResult = await supabase
+      .from("matches")
+      .select(baseMatchColumns)
+      .eq("id", matchId)
+      .maybeSingle();
+  }
 
-  const row = match as {
+  const row = matchResult.data as unknown as {
     id: string;
     user_id: string;
     matched_user_id: string;
     status: MatchStatus;
     why_matched: string;
     match_type: "friend" | "study";
+    plan?: unknown;
   } | null;
 
   if (!row || (row.user_id !== profile.id && row.matched_user_id !== profile.id)) {
@@ -50,38 +65,77 @@ async function ChatLoader({ params }: { params: Promise<{ matchId: string }> }) 
   }
 
   const otherId = partnerId(row, profile.id);
-  const { data: partner } = await supabase
+  let partnerResult = await supabase
     .from("users")
-    .select("college, class_year")
+    .select("college, class_year, first_name, tray")
     .eq("id", otherId)
     .maybeSingle();
+  if (partnerResult.error) {
+    partnerResult = await supabase
+      .from("users")
+      .select("college, class_year")
+      .eq("id", otherId)
+      .maybeSingle();
+  }
 
-  const person = partner as { college: string; class_year: number } | null;
+  const person = partnerResult.data as unknown as {
+    college: string;
+    class_year: number;
+    first_name?: string | null;
+    tray?: unknown;
+  } | null;
+
+  const firstName = person?.first_name?.trim() ?? "";
+  const college = person?.college ?? "";
+  const tray = parseTray(person?.tray);
+  const plan = parsePlan(row.plan);
   const mutual = row.status === "mutual";
   const messages = mutual ? await loadMessages(matchId) : [];
+  const details = [
+    row.match_type === "study" ? "Study buddy" : "Friend match",
+    firstName && college ? college : "",
+    person?.class_year ? `class of ${person.class_year}` : "",
+  ].filter(Boolean);
 
   return (
     <>
-      <Link className="text-sm font-medium text-yale" href="/matches">
+      <Link className="text-sm font-extrabold text-leaf underline underline-offset-2" href="/matches">
         Back to matches
       </Link>
-      <h1 className="mt-3 font-serif text-4xl text-ink">
-        {person?.college ?? "Yale"}
-        {person?.class_year ? (
-          <span className="ml-2 font-sans text-base text-muted">Class of {person.class_year}</span>
-        ) : null}
-      </h1>
-      <p className="mt-2 text-sm text-muted">
-        {row.match_type === "study" ? "Study buddy" : "Friend"} · {row.why_matched}
-      </p>
+
+      <header className="mt-4 flex flex-col gap-5 sm:flex-row sm:items-center">
+        {trayIsEmpty(tray) ? null : (
+          <div className="chat-tray">
+            <Tray items={tray} />
+          </div>
+        )}
+        <div className="min-w-0 flex-1">
+          <h1 className="font-serif text-4xl leading-tight text-ink">
+            {partnerName(firstName, college)}
+          </h1>
+          <p className="mt-1 text-sm font-bold text-muted">{details.join(", ")}</p>
+          <p className="mt-3">
+            <Scrap className="deck-note" shape={1} tilt={-1}>
+              {row.why_matched}
+            </Scrap>
+          </p>
+          {plan ? (
+            <p className="mt-2">
+              <Scrap className="deck-note deck-note-plan" tilt={1} white>
+                {planLine(plan)}
+              </Scrap>
+            </p>
+          ) : null}
+        </div>
+      </header>
 
       {mutual ? (
         <ChatPanel currentUserId={profile.id} initialMessages={messages} matchId={matchId} />
       ) : (
         <div className={`${cardClass} mt-6`}>
-          <h2 className="font-serif text-2xl">Chat is still closed</h2>
+          <h2 className="text-xl font-black text-ink">Chat isn&rsquo;t open yet</h2>
           <p className="mt-2 text-sm leading-6 text-muted">
-            Chat stays on SocialSync, and it opens after both of you tap Interested.
+            It opens once you&rsquo;ve both said interested.
           </p>
         </div>
       )}

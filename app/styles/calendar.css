@@ -1,1 +1,259 @@
 /* Calendar import and month calendar styles. */
+
+/*
+  The frame is the area around the calendar panel. It has no background of its
+  own: set `background-image` on .calendar-frame to put a collage photo behind
+  the panel, the way the panel sits on the photo collage in the reference.
+*/
+.calendar-frame {
+  position: relative;
+  /* Sofia's collage: the letter board and pink fabric along the top, tulips
+     and tape along the bottom. The strips keep their proportions at any width. */
+  padding: 13% 7% 12%;
+  border-radius: 3px;
+  background:
+    url("/collage/cal-top.jpg") top right / 64.6% auto no-repeat,
+    url("/collage/cal-bottom.jpg") bottom center / 100% auto no-repeat,
+    url("/collage/bg-blush.jpg") center / cover;
+  box-shadow: 4px 5px 0 rgba(138, 40, 70, 0.18);
+}
+
+.cal-panel {
+  --cal-paper: #fbf6f3;
+  --cal-line: #f2a6cd;
+  --cal-num: #6d1830;
+  --cal-month: #5f8048;
+  --cal-today: #f8e1e7;
+  --cal-meet: #dbe0b8;
+
+  background: var(--cal-paper);
+  border-radius: clamp(1.25rem, 5vw, 3rem);
+  padding: clamp(1rem, 5vw, 3rem) clamp(0.75rem, 4.5vw, 3rem) clamp(1rem, 4vw, 2.5rem);
+}
+
+.cal-month {
+  margin: 0;
+  color: var(--cal-month);
+  font-size: clamp(2.4rem, 10.5vw, 5.25rem);
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  line-height: 1;
+  text-align: center;
+}
+
+.cal-switch {
+  margin: 0.6rem 0 clamp(1rem, 4vw, 2.25rem);
+  text-align: center;
+  font-size: 0.9rem;
+  font-weight: 700;
+}
+.cal-switch a {
+  color: var(--cal-num);
+  text-decoration: underline;
+  text-decoration-color: var(--cal-line);
+  text-decoration-thickness: 2px;
+  text-underline-offset: 4px;
+}
+.cal-switch a:hover {
+  text-decoration-color: var(--cal-num);
+}
+
+.cal-table {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+}
+
+/* The verticals run up past the weekday names and there is no line across the top. */
+.cal-table th {
+  padding: 0.55rem 0.6rem 0.5rem;
+  border: 1px solid var(--cal-line);
+  border-top: 0;
+  color: var(--cal-num);
+  font-size: clamp(0.56rem, 1.5vw, 0.95rem);
+  font-weight: 500;
+  letter-spacing: 0.01em;
+  text-align: left;
+}
+.cal-table td {
+  padding: 0;
+  border: 1px solid var(--cal-line);
+  vertical-align: top;
+}
+
+.cal-cell {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  aspect-ratio: 7 / 9;
+  padding: 0.45rem 0.5rem;
+  overflow: hidden;
+}
+
+.cal-num {
+  align-self: flex-start;
+  color: var(--cal-num);
+  font-size: clamp(0.72rem, 1.5vw, 1rem);
+  font-weight: 500;
+  line-height: 1.2;
+}
+
+.cal-today { background: var(--cal-today); }
+.cal-meetup { background: var(--cal-meet); }
+
+/* Patterned fills for days with nothing open. */
+.cal-stripes {
+  background: repeating-linear-gradient(90deg, #cdd7f7 0 9px, #ffffff 9px 18px);
+}
+.cal-dots {
+  background-color: #f8f6e6;
+  background-image: radial-gradient(circle, #8fae6b 2.6px, rgba(143, 174, 107, 0) 3.2px);
+  background-size: 13px 13px;
+}
+.cal-gingham {
+  background-color: #fbfaf2;
+  background-image:
+    linear-gradient(90deg, rgba(143, 174, 107, 0.4) 50%, rgba(143, 174, 107, 0) 50%),
+    linear-gradient(rgba(143, 174, 107, 0.4) 50%, rgba(143, 174, 107, 0) 50%);
+  background-size: 16px 16px;
+}
+/* Keep the number and the event lines readable on top of a pattern. */
+.cal-packed .cal-num,
+.cal-packed .cal-events {
+  background: var(--cal-paper);
+  border-radius: 0.3rem;
+  padding: 0.05rem 0.3rem;
+}
+
+.cal-plan {
+  margin: 0;
+  color: #8f1d3f;
+  font-size: clamp(0.95rem, 1.9vw, 1.2rem);
+  line-height: 0.95;
+  transform: rotate(-4deg);
+  transform-origin: left center;
+}
+.cal-plan-time {
+  font-family: var(--font-sans);
+  font-size: 0.7rem;
+  font-weight: 800;
+  white-space: nowrap;
+}
+
+.cal-events {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  color: var(--ink);
+  font-size: 0.7rem;
+  line-height: 1.3;
+}
+.cal-events li {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.cal-time {
+  color: var(--cal-month);
+  font-weight: 800;
+}
+.cal-more {
+  color: var(--muted);
+  font-weight: 700;
+}
+
+.cal-marks {
+  display: none;
+  gap: 2px;
+}
+.cal-marks i {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--rose);
+}
+
+.cal-key {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem 1.25rem;
+  margin: 1rem 0 0;
+  padding: 0;
+  list-style: none;
+  color: var(--muted);
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+.cal-key li {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+.cal-key .cal-key-marks { display: none; }
+.cal-swatch {
+  width: 0.95rem;
+  height: 0.95rem;
+  border: 1px solid var(--cal-line);
+}
+
+/* Phone width: cells are about 40px, so show the number, dots, and the fill. */
+@media (max-width: 640px) {
+  .cal-table th {
+    padding: 0.35rem 0.15rem;
+    text-align: center;
+  }
+  .cal-cell {
+    align-items: center;
+    aspect-ratio: 5 / 6;
+    padding: 0.25rem 0.1rem;
+  }
+  .cal-num { align-self: center; }
+  .cal-events,
+  .cal-plan {
+    display: none;
+  }
+  .cal-marks { display: inline-flex; }
+  .cal-key .cal-key-marks { display: inline-flex; }
+  .cal-packed .cal-num { padding: 0 0.2rem; }
+}
+
+/* ---------- import box and the lists under the calendar ---------- */
+
+.cal-steps {
+  margin: 0;
+  padding-left: 1.25rem;
+  list-style: decimal;
+}
+.cal-steps li {
+  padding-left: 0.25rem;
+}
+.cal-steps li + li {
+  margin-top: 0.35rem;
+}
+.cal-steps li::marker {
+  color: var(--rose);
+  font-weight: 900;
+}
+
+.cal-free {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.cal-free li {
+  display: grid;
+  grid-template-columns: 7.5rem 1fr;
+  gap: 0.75rem;
+  padding: 0.6rem 0;
+  border-top: 1px solid var(--hairline);
+}
+.cal-free li:first-child {
+  border-top: 0;
+}
+@media (max-width: 480px) {
+  .cal-free li {
+    grid-template-columns: 1fr;
+    gap: 0.1rem;
+  }
+}

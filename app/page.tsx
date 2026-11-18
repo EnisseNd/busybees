@@ -2,50 +2,57 @@ import { Suspense } from "react";
 import { redirect } from "next/navigation";
 import { AuthForm } from "@/components/auth-form";
 import { NextDrop } from "@/components/next-drop";
+import { Scrap } from "@/components/scrap";
+import { Tray } from "@/components/tray";
 import { getOptionalUser } from "@/lib/auth";
 import { cardClass } from "@/lib/styles";
 import { isSupabaseConfigured } from "@/lib/supabase/env";
 import { createClient } from "@/lib/supabase/server";
 import type { AuthFormState } from "@/lib/types";
 
+const SAMPLE_TRAY = [
+  { label: "Sunflowers", emoji: "🌻", image: "/collage/thing-sunflowers.webp" },
+  { label: "Romcoms", emoji: "🎬", image: "/collage/thing-clapper.webp" },
+  { label: "East Rock", emoji: "👟", image: "/collage/thing-sneakers.webp" },
+  { label: "Matcha", emoji: "🍵", image: "/collage/drink-matcha.webp" },
+  {
+    label: "Thrifting",
+    emoji: "🧣",
+    image: "/collage/thing-scarf.webp",
+    extras: ["/collage/thing-skirt.webp"],
+  },
+];
+
 export default function HomePage(props: PageProps<"/">) {
   return (
-    <main className="mx-auto grid w-full max-w-6xl flex-1 items-start gap-10 px-5 py-10 md:grid-cols-[1.15fr_0.85fr] md:py-16">
+    <main className="mx-auto grid w-full max-w-6xl flex-1 items-start gap-12 px-5 py-8 md:grid-cols-[1.1fr_0.9fr] md:py-12">
       <section>
-        <p className="text-sm font-semibold uppercase tracking-[0.16em] text-gold">
-          Weekly · platonic · on campus
-        </p>
-        <h1 className="mt-3 max-w-xl font-serif text-5xl leading-[1.05] text-ink sm:text-6xl">
-          A weekly friend for lunch, a walk, or a problem set.
+        <h1 className="flex flex-wrap items-end gap-x-2 gap-y-3">
+          <Scrap tilt={-4}>
+            <span className="font-script text-6xl leading-none ink-leaf sm:text-7xl">What&rsquo;s on</span>
+          </Scrap>
+          <Scrap shape={1} tilt={2}>
+            <span className="font-serif text-5xl leading-none ink-rose sm:text-6xl">your tray?</span>
+          </Scrap>
         </h1>
-        <p className="mt-5 max-w-lg text-lg leading-8 text-muted">
-          SocialSync pairs Yale students for friendship, and adds a study-buddy path when you want
-          one. Matches drop once a week. The conversation stays here.
+        <p className="paper-note mt-7 max-w-md px-4 pb-2 pt-2 text-lg font-semibold text-ink">
+          Put five things on a lunch tray. Every Monday you get a few Yale students to swipe
+          through, with a time you&rsquo;re both free.
         </p>
-        <ul className="mt-8 grid gap-3 text-sm leading-6 text-ink">
-          <li className="rounded-2xl bg-white/70 px-4 py-3">
-            Your residential college and class year are part of the account.
-          </li>
-          <li className="rounded-2xl bg-white/70 px-4 py-3">
-            Friend matching is the main list. Study buddies are optional and separate.
-          </li>
-          <li className="rounded-2xl bg-white/70 px-4 py-3">
-            Chat opens after you both tap Interested.
-          </li>
-        </ul>
-        <div className="mt-8">
-          <Suspense
-            fallback={
-              <p className="text-sm font-medium text-yale">Next matches drop Mondays at 9:00am ET.</p>
-            }
-          >
+        <div className="mt-8 max-w-md">
+          <Tray items={SAMPLE_TRAY} />
+        </div>
+        <div className="mt-10">
+          <Suspense fallback={<p className="text-base font-extrabold text-leaf">New trays land every Monday at 9am.</p>}>
             <NextDrop />
           </Suspense>
         </div>
       </section>
 
-      <section className={cardClass}>
-        <h2 className="font-serif text-3xl text-ink">Come in with your Yale email</h2>
+      <section className={`${cardClass} relative`}>
+        <span aria-hidden="true" className="tape -top-3 left-8" />
+        <span aria-hidden="true" className="tape tape-green -top-3 right-8" style={{ "--tilt": "5deg" } as React.CSSProperties} />
+        <h2 className="font-serif text-3xl text-leaf">Sign in with your Yale email</h2>
         <div className="mt-5">
           <Suspense fallback={<p className="text-sm text-muted">Loading sign-in…</p>}>
             <HomeAuth searchParams={props.searchParams} />

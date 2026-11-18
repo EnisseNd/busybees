@@ -59,18 +59,15 @@ export function QuestionnaireForm({ initialDraft }: { initialDraft: Questionnair
 
   return (
     <div>
-      <div aria-hidden className="mb-3 flex gap-1.5">
+      <div aria-hidden className="step-squares mb-3">
         {STEPS.map((label, index) => (
-          <span
-            className={`h-1 flex-1 rounded-full ${index <= step ? "bg-yale" : "bg-line"}`}
-            key={label}
-          />
+          <span data-done={index <= step} key={label} />
         ))}
       </div>
-      <p className="text-sm text-muted">
+      <p className="text-sm font-semibold text-muted">
         Step {step + 1} of {STEPS.length}
-        <span className="text-ink"> · {STEPS[step]}</span>
       </p>
+      <h2 className="mt-1 font-serif text-2xl text-leaf">{STEPS[step]}</h2>
 
       <div className="mt-6">
         {step === 0 ? <EnergyStep draft={draft} setDraft={setDraft} /> : null}
@@ -82,12 +79,12 @@ export function QuestionnaireForm({ initialDraft }: { initialDraft: Questionnair
       </div>
 
       {error ? (
-        <p className="mt-4 text-sm text-clay" role="alert">
+        <p className="mt-4 text-sm font-bold text-alert" role="alert">
           {error}
         </p>
       ) : null}
 
-      <div className="mt-6 flex items-center justify-between gap-3">
+      <div className="mt-8 flex items-center justify-between gap-3 border-t border-hairline pt-5">
         <button
           className={secondaryButtonClass}
           disabled={step === 0 || pending}
@@ -105,7 +102,7 @@ export function QuestionnaireForm({ initialDraft }: { initialDraft: Questionnair
           </button>
         ) : (
           <button className={primaryButtonClass} disabled={pending} onClick={submit} type="button">
-            {pending ? "Saving…" : "Save questionnaire"}
+            {pending ? "Saving…" : "Save my answers"}
           </button>
         )}
       </div>
@@ -152,7 +149,7 @@ function InterestStep({
   return (
     <MultiGroup
       hint={`${draft.friend.interests.length} selected. Pick at least 3.`}
-      label="What do you actually like doing?"
+      label="What do you like doing?"
       onChange={(interests) =>
         setDraft((current) => ({ ...current, friend: { ...current.friend, interests } }))
       }
@@ -215,7 +212,7 @@ function LookingStep({
 }) {
   return (
     <MultiGroup
-      hint="Pick any that fit. This is the friend path, separate from study buddies."
+      hint="Pick any that fit."
       label="What are you looking for?"
       onChange={(lookingFor) =>
         setDraft((current) => ({ ...current, friend: { ...current.friend, lookingFor } }))
@@ -245,9 +242,9 @@ function PromptStep({
 
   return (
     <div className="grid gap-4">
-      <p className="text-sm leading-6 text-muted">
-        These stay on your questionnaire. Your match sees a short why-you-matched line, written from
-        the choices above.
+      <p className="text-sm font-semibold leading-6 text-muted">
+        Only you see these. Your match gets one line about what you have in common, taken from
+        the earlier steps.
       </p>
       <label>
         <span className={labelClass}>A perfect Sunday in New Haven looks like…</span>
@@ -292,19 +289,19 @@ function StudyStep({
 }) {
   return (
     <div className="grid gap-6">
-      <label className="flex items-start gap-3 rounded-2xl border border-line bg-white px-4 py-3">
+      <label className="flex items-start gap-3 rounded-[2px] border-2 border-hairline bg-white px-4 py-3">
         <input
           checked={draft.studyOptIn}
-          className="mt-1"
+          className="mt-1 h-4 w-4 accent-[var(--leaf)]"
           onChange={(event) =>
             setDraft((current) => ({ ...current, studyOptIn: event.target.checked }))
           }
           type="checkbox"
         />
         <span>
-          <span className="block font-medium">Also match me with a study buddy</span>
-          <span className="mt-1 block text-sm text-muted">
-            This is a separate weekly list. Leave it off and you only get friend matches.
+          <span className="block font-extrabold">Match me with a study buddy too</span>
+          <span className="mt-1 block text-sm font-semibold text-muted">
+            Study buddies come as their own list each week. Leave this off and you only get friend matches.
           </span>
         </span>
       </label>
@@ -312,7 +309,7 @@ function StudyStep({
       {draft.studyOptIn ? (
         <>
           <MultiGroup
-            hint="Pick the subjects you want company for."
+            hint="Pick the ones you want company for."
             label="Subjects"
             onChange={(subjects) =>
               setDraft((current) => ({ ...current, study: { ...current.study, subjects } }))
@@ -377,26 +374,23 @@ function ChoiceGroup<T extends string>({
 }) {
   return (
     <fieldset>
-      <legend className="mb-2 text-sm font-medium text-ink">{label}</legend>
+      <legend className="mb-2 text-sm font-extrabold text-ink">{label}</legend>
       <div className="grid gap-2" role="radiogroup">
         {options.map((option) => {
           const selected = value === option.value;
           return (
             <button
               aria-checked={selected}
-              className={`rounded-2xl border px-4 py-3 text-left transition ${
-                selected
-                  ? "border-yale bg-yale text-white"
-                  : "border-line bg-white hover:border-yale"
-              }`}
+              className="slip px-4 py-3"
+              data-picked={selected}
               key={option.value}
               onClick={() => onChange(option.value)}
               role="radio"
               type="button"
             >
-              <span className="block font-medium">{option.label}</span>
+              <span className="block font-extrabold">{option.label}</span>
               {option.hint ? (
-                <span className={`mt-0.5 block text-sm ${selected ? "text-white/80" : "text-muted"}`}>
+                <span className={`mt-0.5 block text-sm font-semibold ${selected ? "text-white" : "text-muted"}`}>
                   {option.hint}
                 </span>
               ) : null}
@@ -423,19 +417,16 @@ function MultiGroup({
 }) {
   return (
     <fieldset>
-      <legend className="mb-1 text-sm font-medium text-ink">{label}</legend>
+      <legend className="mb-1 text-sm font-extrabold text-ink">{label}</legend>
       {hint ? <p className="mb-3 text-sm text-muted">{hint}</p> : null}
-      <div className="flex flex-wrap gap-2">
+      <div className="flex flex-wrap gap-2.5">
         {options.map((option) => {
           const selected = values.includes(option);
           return (
             <button
               aria-pressed={selected}
-              className={`rounded-full border px-3 py-1.5 text-sm transition ${
-                selected
-                  ? "border-yale bg-yale text-white"
-                  : "border-line bg-white text-ink hover:border-yale"
-              }`}
+              className="slip slip-rose px-3 py-1.5 text-sm font-bold"
+              data-picked={selected}
               key={option}
               onClick={() =>
                 onChange(

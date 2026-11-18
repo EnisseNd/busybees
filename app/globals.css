@@ -51,27 +51,28 @@
   --color-moss: var(--leaf);
   --color-clay: var(--alert);
 
-  --font-sans: "Nunito Variable", "Nunito", ui-rounded, system-ui, sans-serif;
+  --font-sans: "Inter Variable", "Inter", "Helvetica Neue", Arial, sans-serif;
   --font-serif: "Abril Fatface", Georgia, serif;
-  --font-script: "Yesteryear", "Snell Roundhand", cursive;
+  --font-script: "Pinyon Script", "Snell Roundhand", cursive;
+  --font-hand: "Sacramento", "Bradley Hand", cursive;
+}
+
+html {
+  background-color: var(--locker);
 }
 
 body {
-  background-color: var(--locker);
-  /* Locker doors: a seam every 340px and a soft light from above. */
-  background-image:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.45), rgba(255, 255, 255, 0) 420px),
-    repeating-linear-gradient(
-      90deg,
-      rgba(255, 255, 255, 0) 0,
-      rgba(255, 255, 255, 0) 336px,
-      rgba(176, 82, 110, 0.28) 336px,
-      rgba(176, 82, 110, 0.28) 338px,
-      rgba(255, 255, 255, 0.5) 338px,
-      rgba(255, 255, 255, 0.5) 340px
-    );
-  background-attachment: fixed;
   color: var(--ink);
+}
+
+/* Sofia's polka-dot paper, pinned to the window. A fixed layer is used rather
+   than background-attachment so phones do not stretch it to the page height. */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  background: var(--locker) url("/collage/bg-dots.jpg") center / cover no-repeat;
 }
 
 ::selection {

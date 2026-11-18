@@ -1,1 +1,209 @@
 /* Swipe deck and tray editor styles. */
+
+/* ---------- Swipe deck ---------- */
+.deck {
+  position: relative;
+  display: grid;
+  width: 100%;
+  max-width: 26rem;
+  margin-inline: auto;
+  border-radius: 3px;
+}
+.deck:focus-visible {
+  outline-offset: 6px;
+}
+.deck-card {
+  position: relative;
+  grid-area: 1 / 1;
+  min-width: 0;
+  transition: transform 240ms ease;
+  will-change: transform;
+}
+.deck-card-top {
+  z-index: 3;
+  cursor: grab;
+  /* Sideways drags move the card; up and down still scroll the page. */
+  touch-action: pan-y;
+  user-select: none;
+}
+.deck-card-dragging {
+  cursor: grabbing;
+  transition: none;
+}
+/* Cards underneath are pinned to the top card's box, so only the top card sets the deck's height. */
+.deck-card-under {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+.deck-card-under-1 {
+  z-index: 2;
+  transform: translateY(0.6rem) rotate(2.5deg) scale(0.97);
+}
+.deck-card-under-2 {
+  z-index: 1;
+  transform: translateY(1.1rem) rotate(-3deg) scale(0.94);
+}
+.deck-card-under > .deck-face {
+  height: 100%;
+  overflow: hidden;
+}
+
+.deck-face {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: 100%;
+  padding: 1.5rem 1.25rem 1.75rem;
+  border-radius: 3px;
+  box-shadow: 0 12px 28px rgba(74, 24, 44, 0.3);
+  overflow: hidden;
+}
+.deck-title {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem 0.25rem;
+  margin: 0;
+  text-align: center;
+}
+.deck-title-script {
+  font-size: clamp(2.6rem, 11vw, 3.4rem);
+  line-height: 1;
+  -webkit-text-stroke: 0.6px currentColor;
+}
+.deck-title-name {
+  font-size: clamp(1.5rem, 6.5vw, 2rem);
+  line-height: 1.1;
+  overflow-wrap: anywhere;
+}
+.deck-tray {
+  width: 100%;
+  margin-top: 1.25rem;
+}
+/* The tray labels hang below the tray, so leave room before the next scrap. */
+.deck-who {
+  margin-top: 1.9rem;
+  text-align: center;
+}
+.deck-why,
+.deck-plan {
+  width: 100%;
+  margin-top: 0.75rem;
+  text-align: center;
+}
+.deck-note {
+  display: block;
+  font-size: 0.95rem;
+  font-weight: 700;
+  line-height: 1.45;
+  color: var(--ink);
+  text-align: left;
+}
+/* A paragraph on a scrap needs more margin than a one-word label, or the cut edge eats the text. */
+.deck-note > .scrap-paper {
+  padding: 1rem 1.15rem 1.05rem;
+}
+.deck-note-plan {
+  color: var(--leaf);
+  font-weight: 900;
+}
+
+.deck-stamp {
+  position: absolute;
+  top: 1.25rem;
+  z-index: 4;
+  pointer-events: none;
+  transition: opacity 120ms linear;
+}
+.deck-stamp-yes { left: 1rem; }
+.deck-stamp-no { right: 1rem; }
+
+@media (prefers-reduced-motion: reduce) {
+  .deck-card,
+  .deck-stamp {
+    transition: none;
+  }
+}
+
+/* ---------- Tray editor ---------- */
+.tray-editor {
+  display: grid;
+  gap: 2rem;
+  align-items: start;
+}
+.tray-editor-preview {
+  position: relative;
+  max-width: 26rem;
+  width: 100%;
+  margin-inline: auto;
+  padding: 2rem 1.25rem 1.75rem;
+  border-radius: 3px;
+  box-shadow: 0 12px 28px rgba(74, 24, 44, 0.3);
+}
+@media (min-width: 56rem) {
+  .tray-editor {
+    grid-template-columns: minmax(0, 24rem) minmax(0, 1fr);
+  }
+  .tray-editor-preview {
+    position: sticky;
+    top: 6rem;
+  }
+}
+
+.tray-slot {
+  min-width: 0;
+  border: 3px solid transparent;
+  border-radius: 3px;
+}
+.tray-slot-active {
+  border-color: var(--sage);
+}
+
+.quick-emoji {
+  width: 2.5rem;
+  height: 2.5rem;
+  border: 2px solid var(--hairline);
+  border-radius: 2px;
+  background: #fff;
+  font-size: 1.25rem;
+  line-height: 1;
+}
+.quick-emoji:hover {
+  border-color: var(--leaf);
+}
+
+.drink-choice {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.3rem 0.9rem 0.3rem 0.35rem;
+  border: 2px solid var(--hairline);
+  border-radius: 2px;
+  background: #fff;
+  font-size: 0.9rem;
+  font-weight: 800;
+  color: var(--ink);
+}
+.drink-choice:hover {
+  border-color: var(--leaf);
+}
+.drink-choice-on {
+  border-color: var(--leaf);
+  background: var(--scrap);
+}
+.drink-choice-photo {
+  width: 2.25rem;
+  height: 2.25rem;
+  border-radius: 50%;
+  object-fit: cover;
+  background: var(--scrap);
+}
+
+/* ---------- Chat header ---------- */
+.chat-tray {
+  width: 100%;
+  max-width: 16.25rem;
+  flex: none;
+}

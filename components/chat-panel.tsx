@@ -86,19 +86,15 @@ export function ChatPanel({
     <div className="flex min-h-[28rem] flex-1 flex-col">
       <div className="flex flex-1 flex-col gap-3 overflow-y-auto py-4">
         {messages.length === 0 ? (
-          <p className="text-sm text-muted">Say hello and suggest a time.</p>
+          <p className="text-sm font-semibold text-muted">Nobody has said anything yet. Say hi and pick a time.</p>
         ) : (
           messages.map((message) => {
             const mine = message.senderId === currentUserId;
             return (
               <div className={mine ? "flex justify-end" : "flex justify-start"} key={message.id}>
-                <div
-                  className={`max-w-[80%] rounded-2xl px-3 py-2 text-sm leading-6 ${
-                    mine ? "bg-yale text-white" : "border border-line bg-white text-ink"
-                  }`}
-                >
+                <div className={mine ? "chat-note chat-note-mine" : "chat-note"}>
                   <p>{message.content}</p>
-                  <p className={`mt-1 text-xs ${mine ? "text-white/70" : "text-muted"}`}>
+                  <p className={`mt-1 text-xs font-semibold ${mine ? "text-white" : "text-muted"}`}>
                     {formatTime(message.createdAt)}
                   </p>
                 </div>
@@ -132,7 +128,7 @@ export function ChatPanel({
         </button>
       </form>
       {error ? (
-        <p className="mt-2 text-sm text-clay" role="alert">
+        <p className="mt-2 text-sm font-bold text-alert" role="alert">
           {error}
         </p>
       ) : null}

@@ -1,6 +1,6 @@
-# SocialSync
+# busybee
 
-Platonic friend matching for Yale, with an optional study-buddy path. Matches drop once a week. Chat stays on the site and opens only after both people tap Interested.
+Friend matching for Yale students, with an optional study-buddy list. Everyone fills a lunch tray with five things. Each Monday you get a few trays to swipe through, and if you've both imported a calendar, a time and place you're both free. Chat opens only after both people tap Interested.
 
 ## Stack
 
@@ -11,7 +11,7 @@ Platonic friend matching for Yale, with an optional study-buddy path. Matches dr
 ## Setup
 
 1. Create a Supabase project.
-2. In the SQL editor, run [`supabase/schema.sql`](supabase/schema.sql) once.
+2. In the SQL editor, run [`supabase/schema.sql`](supabase/schema.sql) once, then [`supabase/migrations/001_trays_and_calendar.sql`](supabase/migrations/001_trays_and_calendar.sql). The second file adds trays, imported calendars and the suggested plan on a match. It's safe to run again. Until it has been run the app still works, but trays show up empty and no plans are suggested.
 3. In Authentication → Providers, enable Email. For local testing you can turn off “Confirm email”.
 4. In Authentication → URL configuration, set the site URL to `http://localhost:3000` and add `http://localhost:3000/auth/callback` to the redirect allow list.
 5. Copy `.env.example` to `.env.local` and fill in the project URL, publishable key, secret key, and `CRON_SECRET`.
@@ -39,6 +39,14 @@ Point a scheduler at that URL for Mondays at 9:00am America/New_York. `GET` work
 
 Each person can receive up to three friend matches. Study matches are a separate list and only include students who opted in.
 
+## Trays
+
+A tray is a first name plus five things: a label with an emoji, a photo you upload, or one of the ready-made cut-outs in `public/collage` (the round well is for your drink). Trays are stored on `users.tray` and saved through the `save_tray` database function, so college, class year and email can't be changed from the browser. Someone can see your tray only once you've been matched with them.
+
+## Calendar
+
+On the Calendar page you paste your Google Calendar's secret iCal address, or upload an `.ics` file. It's a one-time copy: import again to refresh it. Event names are stored in `calendars`, which only the owner can read. The weekly match job reads both calendars with the service role, finds the first hour you're both free that week, and writes only that time and a place onto the match.
+
 ## Chat
 
 A match row is shared by the pair. Chat unlocks when both responses are `interested` and `status` is `mutual`. The thread uses Supabase Realtime and polls every few seconds so it still updates if replication is off. The schema adds `messages` to the realtime publication.
@@ -49,7 +57,9 @@ A match row is shared by the pair. Chat unlocks when both responses are `interes
 app/
   page.tsx                 Login and signup
   questionnaire/page.tsx   Multi-step form
-  matches/page.tsx         Friends and study-buddy tabs
+  matches/page.tsx         Trays to swipe, friends and study-buddy tabs
+  tray/page.tsx            Edit your own tray
+  calendar/page.tsx        Calendar import and the month view
   chat/[matchId]/page.tsx  On-site messages
   auth/callback/route.ts   Magic-link return
   api/cron/matches/route.ts
@@ -57,16 +67,20 @@ app/
 components/                Forms, match board, chat
 lib/
   matching.ts              Scores and weekly generation
+  ics.ts, plan.ts          Calendar parsing, free time, suggested plan
   questionnaire.ts         Answer validation
   auth.ts                  Current user
   supabase/                Browser, server, and service-role clients
 proxy.ts                   Refreshes the Supabase session
+public/collage/            Tray, drinks, backgrounds and paper pieces
 supabase/schema.sql
+supabase/migrations/
 ```
 
 ## Notes
 
 - Prompts are saved on the questionnaire and are not shown to a match. The card uses the generated “why you matched” line.
 - Questionnaires are private. The match job is the only reader of other people’s answers.
-- Profiles expose college and class year to someone you are already matched with. The UI does not show email.
+- Someone you are already matched with can see your first name, college, class year and tray. The UI does not show email.
+- The tray photo, drinks, backgrounds and paper pieces in `public/collage` come from Sofia's own graphics.
 - `user_response` and `matched_response` sit beside `status` so each person can decide independently. One status column cannot store both decisions, and chat needs a single match id.
