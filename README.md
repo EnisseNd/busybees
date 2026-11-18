@@ -149,7 +149,8 @@ Chat unlocks when both responses are `interested` and `status` is `mutual`. The 
 ![Grok screenshot](grok-screenshot.png)
 
 ## video
-<video controls src="DemoVideo 2.mov" title="Title"></video>
+
+https://github.com/user-attachments/assets/0368ffac-005e-4d1f-b808-2f6fb7a3c4ff
 
 <p align="center">
   <img src="public/collage/logo-busybees.webp" width="200" alt="BusyBees"><br>
