@@ -8,7 +8,7 @@
 
 ## Demo Video
 
-
+https://github.com/user-attachments/assets/0368ffac-005e-4d1f-b808-2f6fb7a3c4ff
 
 
 <img src="docs/readme/h-tray.png" height="56" alt="Fill your tray">
@@ -148,9 +148,6 @@ Chat unlocks when both responses are `interested` and `status` is `mutual`. The 
 
 ![Grok screenshot](grok-screenshot.png)
 
-## video
-
-https://github.com/user-attachments/assets/0368ffac-005e-4d1f-b808-2f6fb7a3c4ff
 
 <p align="center">
   <img src="public/collage/logo-busybees.webp" width="200" alt="BusyBees"><br>
