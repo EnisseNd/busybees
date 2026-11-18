@@ -106,7 +106,7 @@ export function CalendarImport({
           the new copy replaces the old one. We use the address once and don&rsquo;t keep it.
         </p>
         <p className="mt-2 text-sm leading-6 text-muted">
-          We only keep when you&rsquo;re busy. Event names are thrown away when you import, and a match only ever sees the lunch time and place we pick.
+          We only keep when you&rsquo;re busy. Event names are thrown away when you import. Someone you&rsquo;ve been matched with can see which hours you&rsquo;re free, and the lunch we suggest. They never see what the events are called.
         </p>
       </div>
 

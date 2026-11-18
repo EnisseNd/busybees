@@ -47,6 +47,7 @@ export function demoMatches(today: Date): MatchCardModel[] {
       id: "mateo", matchType: "friend", weekStart, score: 82, ...pending,
       whyMatched: "You both put a thrift find and a long walk on your tray, and you both want someone to explore New Haven with.",
       plan: { date: upcoming(today, 4), hour: 12, activity: "Lunch", place: "Saybrook dining hall" },
+      sharedFree: "Both free Thu 12 PM–2 PM, Fri 6 PM–8 PM",
       partner: {
         id: "p-mateo", firstName: "Mateo", college: "Pierson", classYear: 2029,
         tray: [

@@ -128,6 +128,8 @@ export type MatchCardModel = {
   viewerResponse: MatchResponse;
   partnerResponse: MatchResponse;
   plan: MatchPlan | null;
+  /** "Both free Thu 12 PM–2 PM", when both calendars share an hour. */
+  sharedFree?: string;
   partner: {
     id: string;
     firstName: string;

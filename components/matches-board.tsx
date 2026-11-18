@@ -425,6 +425,13 @@ function CardFace({ card }: { card: DeckCard }) {
           </Scrap>
         </p>
       ) : null}
+      {card.sharedFree ? (
+        <p className="deck-plan">
+          <Scrap className="deck-note" tilt={1} white>
+            {card.sharedFree}
+          </Scrap>
+        </p>
+      ) : null}
     </article>
   );
 }
@@ -458,6 +465,9 @@ function AnsweredList({
                   {card.partner.firstName.trim() ? `${whoLine(card)}, ` : ""}
                   week of {formatWeek(card.weekStart)}
                 </p>
+                {card.sharedFree ? (
+                  <p className="text-sm font-bold text-leaf">{card.sharedFree}</p>
+                ) : null}
               </div>
               <div className="flex items-center gap-2">
                 {mutual && card.plan ? (

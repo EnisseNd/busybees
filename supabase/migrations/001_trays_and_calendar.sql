@@ -53,9 +53,10 @@ $$;
 revoke all on function public.save_tray(text, jsonb) from public, anon;
 grant execute on function public.save_tray(text, jsonb) to authenticated;
 
--- Imported calendar events. Private: only the owner can read them. The weekly
--- match job reads them with the service role to find shared free time, and
--- only the suggested time and place are written to the match.
+-- Imported calendar events. Private: only the owner can read the table. The
+-- weekly match job reads it with the service role. Migration 002 adds
+-- match_availability, which shows hour-level free time to someone you have an
+-- open match with. Event names are not part of that view.
 create table if not exists public.calendars (
   user_id uuid primary key references public.users (id) on delete cascade,
   events jsonb not null default '[]'::jsonb,

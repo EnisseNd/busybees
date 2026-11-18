@@ -1,3 +1,4 @@
+import { compareCalendars, sharedFreeLine } from "../lib/availability";
 import { parseIcs, slimIcs } from "../lib/ics";
 import { freeHours, freeWindows, normalizeEvents, suggestPlan } from "../lib/plan";
 import type { CalendarEvent } from "../lib/types";
@@ -189,6 +190,25 @@ check(
 );
 const weekOfBusy = Array.from({ length: 7 }, (_, i) => busy(`2026-11-${String(16 + i).padStart(2, "0")}`, 9, 22));
 check("no plan when there is no shared hour", suggestPlan({ ...shared, aEvents: weekOfBusy, bEvents: [], matchType: "friend" }) === null);
+
+const compared = compareCalendars(
+  { youConnected: true, themConnected: true, you: events, them: other },
+  now,
+);
+const sharedWednesday = compared.find((day) => day.date === "2026-11-18");
+check(
+  "shared hours drop the block only one person has",
+  sharedWednesday?.both.some((window) => window.start === 11 && window.end === 12) === true &&
+    sharedWednesday.both.some((window) => window.start === 12) === false,
+);
+check("their free hours still include the rest of the day", (sharedWednesday?.them.length ?? 0) > 0);
+check("a missing calendar contributes no hours", compareCalendars({ youConnected: true, themConnected: false, you: events, them: other }, now)[1].them.length === 0);
+check("sharedFreeLine names the overlap", sharedFreeLine(compared).startsWith("Both free "));
+const blockedWeek = Array.from({ length: 7 }, (_, index) => busy(`2026-11-${17 + index}`, 9, 22));
+check(
+  "sharedFreeLine stays empty when nobody overlaps",
+  sharedFreeLine(compareCalendars({ youConnected: true, themConnected: true, you: blockedWeek, them: blockedWeek }, now)) === "",
+);
 
 check("normalizeEvents drops malformed rows", normalizeEvents([{ date: "2026-11-18", start: 60, end: 120, title: "ok" }, { date: "x" }, null, 4]).length === 1);
 check("normalizeEvents handles a missing column", normalizeEvents(undefined).length === 0);

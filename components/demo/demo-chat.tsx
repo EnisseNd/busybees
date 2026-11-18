@@ -6,7 +6,7 @@ import { Scrap } from "@/components/scrap";
 import { Tray } from "@/components/tray";
 import { demoMatches } from "@/lib/demo-data";
 import { googleCalendarLink } from "@/lib/plan";
-import { fieldClass, primaryButtonClass } from "@/lib/styles";
+import { cardClass, fieldClass, primaryButtonClass } from "@/lib/styles";
 import { planLine, starterLine } from "@/lib/tray";
 import { useMounted } from "@/lib/use-mounted";
 
@@ -108,6 +108,17 @@ export function DemoChat({ matchId }: { matchId: string }) {
           ) : null}
         </div>
       </header>
+
+      {match.sharedFree ? (
+        <section className={`${cardClass} mt-6`}>
+          <h2 className="font-serif text-2xl text-ink">When you can both make it</h2>
+          <p className="mt-2 text-sm font-bold leading-6 text-ink">{match.sharedFree}</p>
+          <p className="mt-2 text-sm leading-6 text-muted">
+            Sample hours. On a real match this list comes from the Google Calendars you both imported,
+            and it never includes event names.
+          </p>
+        </section>
+      ) : null}
 
       <div className="mt-6 flex min-h-[18rem] flex-col gap-3">
         {starter ? <p className="text-sm font-semibold text-muted">{starter}</p> : null}

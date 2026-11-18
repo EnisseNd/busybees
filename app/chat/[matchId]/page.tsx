@@ -2,9 +2,11 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
+import { AvailabilityCompare } from "@/components/availability-compare";
 import { ChatPanel } from "@/components/chat-panel";
 import { Scrap } from "@/components/scrap";
 import { Tray } from "@/components/tray";
+import { loadMatchAvailability } from "@/lib/availability-load";
 import { requireUser } from "@/lib/auth";
 import { isUuid } from "@/lib/constants";
 import { partnerId } from "@/lib/match-view";
@@ -91,6 +93,8 @@ async function ChatLoader({ params }: { params: Promise<{ matchId: string }> }) 
   const plan = parsePlan(row.plan);
   const mutual = row.status === "mutual";
   const messages = mutual ? await loadMessages(matchId) : [];
+  const availability = row.status === "closed" ? null : await loadMatchAvailability(matchId);
+  const who = partnerName(firstName, college);
   const details = [
     row.match_type === "study" ? "Study buddy" : "Friend match",
     firstName && college ? college : "",
@@ -128,6 +132,14 @@ async function ChatLoader({ params }: { params: Promise<{ matchId: string }> }) 
           ) : null}
         </div>
       </header>
+
+      {availability ? (
+        <AvailabilityCompare
+          missing={availability.kind === "missing"}
+          name={who}
+          snapshot={availability.kind === "ready" ? availability.snapshot : null}
+        />
+      ) : null}
 
       {mutual ? (
         <ChatPanel currentUserId={profile.id} initialMessages={messages} matchId={matchId} />

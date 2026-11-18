@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { Suspense } from "react";
 import { MatchesBoard } from "@/components/matches-board";
 import { NextDrop } from "@/components/next-drop";
+import { compareCalendars, sharedFreeLine } from "@/lib/availability";
+import { loadAvailabilityForMatches } from "@/lib/availability-load";
 import { requireUser } from "@/lib/auth";
 import { partnerId, partnerResponse, viewerResponse } from "@/lib/match-view";
 import { parsePlan, parseTray, trayIsEmpty } from "@/lib/tray";
@@ -104,9 +106,14 @@ async function MatchesContent() {
     }
   }
 
+  const openIds = matches.filter((match) => match.status !== "closed").map((match) => match.id);
+  const availability = await loadAvailabilityForMatches(openIds);
+
   const cards: MatchCardModel[] = matches.map((match) => {
     const otherId = partnerId(match, profile.id);
     const partner = partners.get(otherId);
+    const snapshot = availability.byId.get(match.id);
+    const sharedFree = snapshot ? sharedFreeLine(compareCalendars(snapshot)) : "";
     return {
       id: match.id,
       matchType: match.match_type,
@@ -117,6 +124,7 @@ async function MatchesContent() {
       viewerResponse: viewerResponse(match, profile.id),
       partnerResponse: partnerResponse(match, profile.id),
       plan: parsePlan(match.plan),
+      sharedFree: sharedFree || undefined,
       partner: {
         id: otherId,
         firstName: partner?.first_name?.trim() ?? "",
